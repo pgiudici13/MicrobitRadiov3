@@ -1,8 +1,24 @@
-makecode:
-  target: microbit
-  platform: microbit
-  home_url: https://makecode.microbit.org/
-theme: jekyll-theme-slate
-include:
-  - assets
-  - README.md
+# Disabilita il tema Jekyll di MakeCode
+theme: null
+
+# Nessun layout automatico
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: null
+
+# Escludi i file di MakeCode dal processing Jekyll
+exclude:
+  - main.ts
+  - main.blocks
+  - test.ts
+  - pxt.json
+  - Makefile
+  - Gemfile
+  - _history
+  - tsconfig.json
+  - .vscode
+
+# Non usare il Gemfile di MakeCode
+plugins: []
