@@ -31,7 +31,7 @@
 
 ## Come Funziona la Rete
 
-Il sistema funziona in modo che tutti i micro:bit siano su uno stesso piano. Non c'è un server, tutti possono trasmettere e ricevere messaggi direttamente sullo stesso canale radio.
+Il sistema funziona in modalità ad-hoc: tutti i micro:bit comunicano direttamente uno con l'altro. Non c'è un server, tutti possono trasmettere e ricevere messaggi direttamente sullo stesso canale radio.
 
 ```mermaid
 graph LR
