@@ -1,18 +1,18 @@
 <div align="center">
   <h1>MICROBIT RADIO V3</h1>
-  <p><strong>Protocollo Avanzato di Sincronizzazione e Comunicazione Radio per sistemi embedded.</strong></p>
+  <p><strong>Un sistema semplice e avanzato per comunicare e sincronizzare vari micro:bit via Radio.</strong></p>
   
   <p>
     <a href="https://github.com/pgiudici13"><img src="https://img.shields.io/badge/Autore-pgiudici13-blue?style=for-the-badge&logo=github"></a>
     <img src="https://img.shields.io/badge/Hardware-micro:bit-brightgreen?style=for-the-badge&logo=microbit">
     <img src="https://img.shields.io/badge/Linguaggio-TypeScript-blue?style=for-the-badge&logo=typescript">
     <img src="https://img.shields.io/badge/Stato-Stabile-success?style=for-the-badge">
-    <img src="https://img.shields.io/badge/Connessione-BLE_Protocol-purple?style=for-the-badge">
+    <img src="https://img.shields.io/badge/Connessione-Radio_Frequenza-purple?style=for-the-badge">
   </p>
 
   <br>
 
-  <em>Scambio rapido di messaggi, identificazione visiva dei nodi e quantificazione HUD online.</em>
+  <em>Scambio di messaggi, icone personalizzate per utente e un grafico in tempo reale dei dispositivi online.</em>
   
 </div>
 
@@ -20,131 +20,128 @@
 
 ---
 
-## Architettura di Rete
+## Come Funziona la Rete
 
-Il sistema basa le proprie fondamenta su una topologia di trasmissione broadcast-centrica. Nessun nodo è esclusivamente server; tutti agiscono come *peer* indipendenti all'interno dell'infrastruttura condivisa sul canale.
+Il sistema funziona in modo che tutti i micro:bit siano su uno stesso piano. Non c'è un server, tutti possono trasmettere e ricevere messaggi direttamente sullo stesso canale radio.
 
 ```mermaid
 graph LR
-    Mittente[Dispositivo Mittente] -->|Invia Impulso| Rete((Canale 137))
-    Rete --> Riceventi[Nodi Connessi]
-    Riceventi -->|Segnale di Presenza| Mittente
+    Mittente[Il tuo micro:bit] -->|Invia un Ping| Rete((Canale 137))
+    Rete --> Riceventi[Altri micro:bit]
+    Riceventi -->|Rispondono Sono qui!| Mittente
 ```
 
 > [!TIP]
-> **Lettura Semplificata:** Il mittente interroga il canale, i dispositivi adiacenti che ascoltano inviano un pacchetto di conferma, garantendo l'aggiornamento costante della conta utenti in tempo reale.
+> **Cosa significa?** Quando "interroghi" la rete, tutti gli altri dispositivi nelle vicinanze ti rispondono in automatico. Così il tuo schermo si aggiorna e ti mostra esattamente quante persone sono collegate!
 
 ---
 
-## Elaborazione dei Flussi
+## Gestione dei Messaggi
 
-Quando il protocollo in background rileva una modulazione di frequenza, esegue un "routing" per indirizzare i bit ricevuti alle loro funzioni associate. Questo diagramma di flusso illustra la logica ramificata:
+Quando il micro:bit riceve un segnale, analizza rapidamente di cosa si tratta e decide l'azione più giusta da compiere, come mostrato qui sotto:
 
 ```mermaid
 flowchart TD
-    A([Segnale in Ingresso]) --> B{Analisi del Payload}
-    B -- ID Profilo --> C[Check Identificativo]
-    B -- Stringa Testuale --> D[Sospensione Attività Baseline]
-    B -- Ping di Sync --> E[Incremento Ledger SYNC]
+    A([Nuovo Messaggio Ricevuto]) --> B{Che cos'è?}
+    B -- Nome Utente --> C[Controllo del Nome]
+    B -- Molto Testo --> D[Mette In Pausa Le Animazioni]
+    B -- Comando Conto Utenti --> E[Aggiunge +1 alle Statistiche]
     
-    C --> F{Whitelist?}
-    F -- Si --> G[Routine Grafica Dedicata]
-    F -- No --> H[Scarto Silenzioso del Pacchetto]
+    C --> F{Lo conosco?}
+    F -- Si --> G[Mostro la sua Icona Speciale e Suono]
+    F -- No --> H[Ignoro il messaggio]
     
-    D --> I[Forzatura Scrolling a Schermo]
-    E --> J[Attesa Ricalcolo Variabile]
+    D --> I[Faccio scorrere il testo sullo schermo]
+    E --> J[Attendo altre risposte]
 ```
 
 ---
 
-## Macchina a Stati del Dispositivo
+## Gli Stati del micro:bit
 
-Il comportamento del software è descrivibile tramite una macchina a stati finiti (FSM). Il micro_bit passa da stato passivo ("Attesa") a stati attivi solo tramite precise condizioni:
+In ogni momento, la scheda si trova in una modalità specifica per evitare di bloccarsi o mostrare schermate sbagliate sulle luci LED:
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Attesa
-    Attesa --> Trasmissione : Pressione Input (A / A+B)
-    Trasmissione --> Attesa : Output Inviato
-    Attesa --> Disegno_HUD : Interrogazione Grafica (Tasto B)
-    Disegno_HUD --> Attesa : Timeout Interfaccia
-    Attesa --> Ricezione : Interrupt Radio
-    Ricezione --> Esecuzione_VIP : Rilevato Profilo Noto
-    Ricezione --> Alert_Testuale : Dati Testo Generici
-    Esecuzione_VIP --> Attesa : Termine Animazione
-    Alert_Testuale --> Attesa : Fine Scorrimento Testo
+    [*] --> InAttesa
+    InAttesa --> InviaMessaggio : Premi A / A+B
+    InviaMessaggio --> InAttesa : Finito
+    InAttesa --> DisegnaGrafico : Premi B
+    DisegnaGrafico --> InAttesa : Finito
+    InAttesa --> RiceveSegnale : Ricezione Radio
+    RiceveSegnale --> AnimazioneSpeciale : Amico Riconosciuto
+    RiceveSegnale --> MostraTesto : Frase Ricevuta
+    AnimazioneSpeciale --> InAttesa : Finito
+    MostraTesto --> InAttesa : Finito
 ```
 
 ---
 
-## Panoramica a Mappa Mentale
+## Struttura del Progetto (Mappa Mentale)
 
-Una sintesi radiale dei sotto-settori informatici toccati durante il disegno tecnico del software e delle limitazioni superate in fase di design:
+Ecco uno schema semplice diviso per categorie che riassume tutto ciò di cui si occupa il codice di RadioV3:
 
 ```mermaid
 mindmap
-  root((RadioV3))
-    Protocollo Rete
-      Comunicazione Broadcast
-      Canale Sicuro 137
-      Massimale Tx 7
-    Interfaccia Grafica
-      Estensione Microturtle
-      Piano Cartesiano X/Y
-      Draw Rendering a Barre
+  root((Progetto Radio))
+    Rete Radio
+      Canale Pubblico 137
+      Massima Portata del Segnale
+    Disegni a Schermo
+      Barre Grafiche
+      Libreria Turtle
     Sicurezza
-      Gestione Identificativi
-      Lock di Trasmissione
-    Subroutine Audio
-      Campionatura Frequenze
-      Interrupt Prioritario
+      Nomi Speciali Ammessi
+      Blocco degli Intrusi
+    Audio e Suoni
+      Allarmi Bleep
+      Canzoncine per Amici
 ```
 
 <details open>
-<summary><b>Dettaglio Funzioni Essenziali</b></summary>
+<summary><b>Dettaglio delle Funzioni Più Belle</b></summary>
 <br>
 
-* **Heads-Up Display (HUD) a Barre**: Rendering a colonne dei LED per contare fisicamente i ritorni (fino a 20).
-* **Profilazione e Audio VIP**: Logiche di eccezione per identificativi noti con riproduzione parallela di file `.MIDI` ed icone isolate.
-* **Priorità Flusso Stringhe**: Gestione asincrona che costringe a schermo interi buffer testuali prevenendo omissioni di dati.
+* **Grafico a Barre**: Accende i LED colonna per colonna per contare fisicamente i ritorni (fino a 20 schede collegate senza sovrapporsi).
+* **Icone Personalizzate**: Se il sistema capisce che si è connesso un identificativo conosciuto, fa partire una sua animazione unica con tanto di colonna sonora in sottofondo.
+* **Priorità al Testo**: Se ricevi un testo lungo, lo scorrimento ha la precedenza assoluta, disattivando qualsiasi altro disegno sulla lavagna LED per non farti perdere il messaggio.
 
 </details>
 
 ---
 
-## Controlli Hardware
+## Uso dei Pulsanti
 
-Mappatura dei pattern di inserimento tramite interattori fisici e relative conseguenze a display.
+Cosa succede quando premi i bottoni fisici sulla scocca del micro:bit.
 
-| Ingresso Fisico | Azione di Rete | Conseguenza sul Display |
+| Pulsante | Azione | Cosa succede sullo schermo |
 | :---: | :--- | :--- |
-| <kbd>A</kbd> | Invio Trasmissione Unilaterale | Risoluzione in fade-in dei loghi associati nelle board che accettano il nodo. |
-| <kbd>A</kbd> + <kbd>B</kbd> | Interrogazione Broad Globale | Reset e ridisegno scalare della matrice alla conta dei ritorni positivi. |
-| <kbd>B</kbd> | Accesso Interfaccia Dati | Rendering in tempo reale delle utenze aggregate via calcoli proporzionali per pixel. |
+| <kbd>A</kbd> | Invia Saluto | Le altre schede (se ti conoscono) accenderanno i LED per salutarti. |
+| <kbd>A</kbd> + <kbd>B</kbd> | Conta Utenti | Azzera il display e lancia il controllo radio per vedere chi c'è in giro. |
+| <kbd>B</kbd> | Aggiorna Schermo | Ridisegna il grafico dal vivo in base all'ultimo "Conta Utenti" effettuato. |
 
 ---
 
-## Moduli MakeCode
+## Librerie Usate
 
-Le configurazioni d'ambiente interne (`ptx.json`) si affidano a quattro core esterni.
+Per far funzionare il codice (`ptx.json`) ci appoggiamo a librerie esterne molto comode:
 
-1. `radio`: Connettività base ad antenna.
-2. `microphone`: Interfacciamenti coi segnali input audio ambientali.
-3. `radio-broadcast`: Ampliamento del comparto trasmissioni a pacchetto rapido.
-4. `microturtle`: Algoritmo a griglia interpolata indispensabile per le funzioni HUD visive di questo protocollo.
+1. `radio`: Che abilita l'antenna principale.
+2. `microphone`: Per catturare il rumore ambientale attraverso i microfoni.
+3. `radio-broadcast`: Per far viaggiare rapidi i messaggi a tutto il gruppo, non solo ad una persona.
+4. `microturtle`: Una libreria speciale che permette di usare lo schermo dei LED come se fosse un piano da disegno per il nostro grafico a barre.
 
 ---
 
-## Prerequisiti Base per l'Uso
+## Da fare prima di usarlo...
 
 > [!WARNING]
-> Condizione vincolante all'esecuzione corretta dell'infrastruttura è l'**abilitazione manuale nel codice sorgente**.
+> È super importante fare una piccola **modifica manuale nel codice** prima di cominciare ad usarlo, altrimenti funzionerà a metà.
 
-Per fare in modo che la scheda operi correttamente come nodo attivo e possa trasmettere messaggi all'interno del progetto, l'utente *deve* modificare manualmente una specifica variabile identificativa all'interno del codice sorgente di base (configurazione del block TypeScript). 
-In mancanza di questo intervento editoriale, la board interpreterà parzialmente la direttiva ed eliminerà la propria interfaccia d'uscita dai cicli generici in radio frequenza.
+Per evitare che troppi dispositivi inesperti intasino le linee, devi prima aprire il codice del progetto e inserire **il tuo nome identificativo**. Finché la variabile col nome non è compilata e convalidata nel codice, il tuo micro:bit saprà solo "ascoltare" (cioè riceverà tutti i messaggi) ma non sarà autorizzato a "parlare" ed inviare risposte al resto della classe!
 
 ---
 
 > [!NOTE]
-> Progetto compilato, scritto e architettato interamente da **[pgiudici13](https://github.com/pgiudici13)**. 
-> Sviluppato per fini di test su interconnessioni hardware e limitazioni di protocollo custom basate su architetture standard e embedded.
+> Progetto compilato, scritto e pensato interamente da **[pgiudici13](https://github.com/pgiudici13)**. 
+> Sviluppato per fini didattici e per capire come far comunicare piccole schede intelligenti con la minor fatica possibile.
