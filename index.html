@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>MicrobitRadioV3 — Protocollo Radio per micro:bit</title>
+  <meta name="description" content="MicrobitRadioV3: protocollo di sincronizzazione e comunicazione radio per micro:bit.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%234f8eff'/></svg>">
+</head>
+<body>
+
+<!-- ====== FULLSCREEN INTRO ====== -->
+<div class="intro-overlay" id="introOverlay">
+  <div class="intro-bg">
+    <div class="intro-ring"></div>
+    <div class="intro-ring"></div>
+    <div class="intro-ring"></div>
+    <div class="intro-ring"></div>
+    <div class="intro-ring"></div>
+    <div class="intro-particle"></div>
+    <div class="intro-particle"></div>
+    <div class="intro-particle"></div>
+    <div class="intro-particle"></div>
+    <div class="intro-particle"></div>
+    <div class="intro-particle"></div>
+    <div class="intro-particle"></div>
+    <div class="intro-particle"></div>
+  </div>
+  <div class="intro-center">
+    <div class="intro-glass-orb">
+      <svg class="intro-logo-svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#4f8eff" stroke-width="1.8"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>
+    </div>
+    <div class="intro-scanline"></div>
+  </div>
+  <div class="intro-text">
+    <p class="intro-label">Connessione alla rete</p>
+    <p class="intro-title">MicrobitRadioV3</p>
+  </div>
+  <div class="intro-progress">
+    <div class="intro-progress-bar"><div class="intro-progress-fill"></div></div>
+    <p class="intro-progress-text">Inizializzazione</p>
+  </div>
+</div>
+
+<!-- ====== BACKGROUND ====== -->
+<canvas id="particlesCanvas"></canvas>
+<div class="bg-layer bg-grid"></div>
+<div class="bg-layer"><div class="bg-orb o1"></div><div class="bg-orb o2"></div><div class="bg-orb o3"></div></div>
+
+<!-- ====== NAVBAR ====== -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo" data-page="home">
+      <div class="nav-logo-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49"/></svg></div>
+      MicrobitRadioV3
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#" data-page="home" class="active">Home</a></li>
+      <li><a href="#" data-page="features">Funzionalità</a></li>
+      <li><a href="#" data-page="code">Codice</a></li>
+      <li><a href="#" data-page="simulator">LED Lab</a></li>
+      <li><a href="#" data-page="github">GitHub</a></li>
+      <li><a href="#" data-page="wiki">Wiki</a></li>
+      <li><a href="#" data-page="about">About</a></li>
+    </ul>
+    <a href="https://github.com/pgiudici13/MicrobitRadiov3" target="_blank" class="nav-cta"><svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> Repo</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+  </div>
+</nav>
+
+<!-- ===================== HOME ===================== -->
+<main class="page active" id="page-home"><div class="page-wrap">
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge"><div class="dot"></div> Versione 3.0 — Stabile</div>
+      <h1><span class="accent">MicrobitRadioV3</span><br>Radio Sync Protocol</h1>
+      <p class="hero-desc">Un protocollo che permette a più micro:bit di comunicare tra loro via radio, contare quanti dispositivi sono online e riconoscere chi si collega alla rete.</p>
+      <div class="hero-btns">
+        <a href="https://makecode.microbit.org/#pub:github:pgiudici13/MicrobitRadiov3" target="_blank" class="btn btn-p"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 17l6-6-6-6"/><path d="M12 19h8"/></svg> Apri in MakeCode</a>
+        <a href="https://github.com/pgiudici13/MicrobitRadiov3" target="_blank" class="btn btn-s"><svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> Repository</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="val">137</div><div class="lbl">Canale Radio</div></div>
+        <div class="hero-stat"><div class="val">20+</div><div class="lbl">Max Dispositivi</div></div>
+        <div class="hero-stat"><div class="val">7</div><div class="lbl">Potenza TX</div></div>
+        <div class="hero-stat"><div class="val">v3</div><div class="lbl">Versione</div></div>
+      </div>
+      <div class="hero-led-wrap"><div class="led-grid" id="heroLed"></div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-inner">
+      <div class="sh sa"><span class="tag">Panoramica</span><h2>Cosa fa questo progetto</h2><p>Le tre funzionalità principali del protocollo</p></div>
+      <div class="grid3">
+        <div class="mini sa d1"><div class="mi"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></div><h4>Sincronizzazione</h4><p>Premi A+B e il tuo micro:bit chiede a tutti gli altri "chi c'è?". Ogni dispositivo risponde con il conteggio in tempo reale.</p></div>
+        <div class="mini sa d2"><div class="mi"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--indigo)" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div><h4>Display HUD</h4><p>Il numero di utenti online viene mostrato come barre LED sullo schermo 5x5. Fino a 20 dispositivi su 4 righe.</p></div>
+        <div class="mini sa d3"><div class="mi"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><h4>Riconoscimento VIP</h4><p>I dispositivi registrati vengono riconosciuti: quando si collegano, appare un simbolo unico e suona una melodia.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-inner">
+      <div class="sh sa"><span class="tag">Come funziona</span><h2>Il processo di sincronizzazione</h2><p>In 4 passaggi, dal lancio dello scan al display</p></div>
+      <div class="sync-box sa sc">
+        <div class="sync-step"><div class="sync-num">1</div><div><h4>Avvio dello scan</h4><p>Premi A+B. Viene inviato un messaggio broadcast a tutti i dispositivi sul canale 137.</p></div></div>
+        <div class="sync-line"></div>
+        <div class="sync-step"><div class="sync-num">2</div><div><h4>Risposta dei nodi</h4><p>Ogni micro:bit che riceve il segnale risponde automaticamente con un pacchetto di conferma.</p></div></div>
+        <div class="sync-line"></div>
+        <div class="sync-step"><div class="sync-num">3</div><div><h4>Conteggio</h4><p>Il dispositivo che ha avviato lo scan raccoglie le risposte e aggiorna il contatore.</p></div></div>
+        <div class="sync-line"></div>
+        <div class="sync-step"><div class="sync-num">4</div><div><h4>Visualizzazione HUD</h4><p>Premi B per vedere il risultato: barre LED progressive mostrano i dispositivi connessi.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-inner">
+      <div class="cta sa"><div><h3>Vuoi provarlo sul tuo micro:bit?</h3><p>Importa il progetto in MakeCode con un click. Ti serve un micro:bit v2.</p></div><a href="https://makecode.microbit.org/#pub:github:pgiudici13/MicrobitRadiov3" target="_blank" class="btn btn-p"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 17l6-6-6-6"/><path d="M12 19h8"/></svg> Apri in MakeCode</a></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-inner">
+      <div class="sh sa"><span class="tag">Esplora</span><h2>Scopri tutto il progetto</h2><p>Accedi rapidamente alle sezioni principali</p></div>
+      <div class="grid-auto">
+        <a href="#" data-page="features" class="card sa d1" style="text-decoration:none;color:inherit"><div class="icon b"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><h3>Funzionalità</h3><p class="desc">Tutte le caratteristiche del protocollo radio</p></a>
+        <a href="#" data-page="code" class="card sa d2" style="text-decoration:none;color:inherit"><div class="icon c"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 18l6-6-6-6"/><path d="M8 6l-6 6 6 6"/></svg></div><h3>Codice sorgente</h3><p class="desc">Il codice TypeScript con spiegazioni</p></a>
+        <a href="#" data-page="simulator" class="card sa d3" style="text-decoration:none;color:inherit"><div class="icon p"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><h3>LED Lab</h3><p class="desc">Sperimenta i pattern del micro:bit</p></a>
+        <a href="#" data-page="github" class="card sa d4" style="text-decoration:none;color:inherit"><div class="icon g"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></div><h3>GitHub Stats</h3><p class="desc">Statistiche live dal repository</p></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-bottom:50px">
+    <div class="section-inner">
+      <div class="join sa"><h3>Vuoi far parte della rete?</h3><p>Hai un micro:bit e vuoi essere riconosciuto? Invia una richiesta tramite GitHub Discussions.</p><a href="https://github.com/pgiudici13/MicrobitRadiov3/discussions" target="_blank" class="btn btn-o" style="margin-bottom:.5rem"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Invia una richiesta</a>
+        <div class="join-steps"><div class="join-s"><div class="sn">1</div><h5>Apri una Discussion</h5><p>Vai su GitHub Discussions</p></div><div class="join-s"><div class="sn">2</div><h5>Indica il tuo nome</h5><p>Scrivi il nome del micro:bit</p></div><div class="join-s"><div class="sn">3</div><h5>Attendi approvazione</h5><p>Verrà aggiunto al codice</p></div></div>
+      </div>
+    </div>
+  </section>
+</div></main>
+
+<!-- ===================== FEATURES ===================== -->
+<main class="page" id="page-features"><div class="page-wrap">
+  <section class="section" style="padding-top:100px">
+    <div class="section-inner">
+      <div class="sh sa"><span class="tag">Funzionalità</span><h2>Cosa offre il protocollo</h2><p>Tutte le caratteristiche principali</p></div>
+      <div class="grid-auto">
+        <div class="card sa d1"><div class="icon b"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></div><h3>Protocollo di Sincronizzazione</h3><p class="desc">Quando premi A+B, il micro:bit invia un segnale broadcast. Tutti i dispositivi rispondono, permettendo di sapere quanti sono online.</p></div>
+        <div class="card sa d2"><div class="icon c"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div><h3>Display HUD a Barre</h3><p class="desc">Lo schermo LED 5x5 diventa un contatore visivo: ogni riga accesa rappresenta fino a 5 utenti. Con 4 righe si arriva a 20.</p></div>
+        <div class="card sa d3"><div class="icon p"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><h3>Profili VIP</h3><p class="desc">Tre dispositivi hanno un nome registrato (geget, zotap, gagez). Quando si connettono, appare un simbolo e una melodia.</p></div>
+        <div class="card sa d4"><div class="icon pk"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg></div><h3>Comunicazione Radio</h3><p class="desc">Tutto avviene sul canale 137 alla potenza massima. I messaggi sono codificati con enum TypeScript.</p></div>
+        <div class="card sa d5"><div class="icon g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div><h3>Feedback Sonoro</h3><p class="desc">Ogni evento ha la sua melodia: messaggi ricevuti, profili VIP e conferme di invio.</p></div>
+        <div class="card sa d6"><div class="icon b"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><h3>Animazione di Avvio</h3><p class="desc">All'accensione, un diamante LED si espande dal centro segnalando che il dispositivo è pronto.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="section-inner">
+      <div class="sh sa"><span class="tag">Controlli</span><h2>I pulsanti del micro:bit</h2></div>
+      <div class="grid3">
+        <div class="ctrl sa d1"><div class="keys"><span class="key">A</span></div><h4>Invia un messaggio</h4><p>Manda un segnale radio alla rete.</p></div>
+        <div class="ctrl sa d2"><div class="keys"><span class="key">A</span><span style="color:var(--text3);padding:4px">+</span><span class="key">B</span></div><h4>Scansione della rete</h4><p>Avvia il conteggio dei dispositivi online.</p></div>
+        <div class="ctrl sa d3"><div class="keys"><span class="key">B</span></div><h4>Mostra chi è online</h4><p>Visualizza l'HUD con le barre LED.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="section-inner">
+      <div class="sh sa"><span class="tag">Architettura</span><h2>Come è strutturata la rete</h2></div>
+      <div class="arch sa sc">
+        <div class="arch-nodes">
+          <div class="arch-n"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" style="margin-bottom:2px"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg><br>Mittente</div>
+          <div class="arch-arr"><svg width="28" height="12" viewBox="0 0 32 16" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M0 8h28m-6-6l6 6-6 6"/></svg></div>
+          <div class="arch-n ctr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" style="margin-bottom:2px"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49"/></svg><br>Canale 137</div>
+          <div class="arch-arr"><svg width="28" height="12" viewBox="0 0 32 16" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M0 8h28m-6-6l6 6-6 6"/></svg></div>
+          <div class="arch-n"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" style="margin-bottom:2px"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg><br>Riceventi</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="section-inner">
+      <div class="sh sa"><span class="tag">Estensioni</span><h2>Moduli utilizzati</h2></div>
+      <div class="grid3" style="grid-template-columns:repeat(4,1fr)">
+        <div class="mod sa d1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg><h4>radio</h4><p>Comunicazione base</p></div>
+        <div class="mod sa d2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--indigo)" stroke-width="1.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg><h4>radio-broadcast</h4><p>Messaggi tipizzati</p></div>
+        <div class="mod sa d3"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><h4>microturtle</h4><p>Disegno sulla griglia</p></div>
+        <div class="mod sa d4"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="1.5"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg><h4>microphone</h4><p>Input audio</p></div>
+      </div>
+    </div>
+  </section>
+</div></main>
+
+<!-- ===================== CODE ===================== -->
+<main class="page" id="page-code"><div class="page-wrap">
+  <section class="section" style="padding-top:100px">
+    <div class="section-inner">
+      <div class="sh sa"><span class="tag">Codice Sorgente</span><h2>Il codice del progetto</h2><p>Scritto in TypeScript per MakeCode</p></div>
+      <div class="code-split sa">
+        <div class="code-info"><h2>Struttura del programma</h2><p style="color:var(--text2);margin-top:.5rem">Il codice è organizzato in blocchi funzionali: enum per i messaggi, handler per i pulsanti, funzioni VIP e loop HUD.</p>
+          <div class="timeline" style="margin-top:1rem">
+            <div class="tl-item"><div class="tl-dot"></div><span class="tl-tag">Enum</span><h4>Messaggi Radio</h4><p>Ogni messaggio ha un ID numerico univoco.</p></div>
+            <div class="tl-item"><div class="tl-dot"></div><span class="tl-tag">Setup</span><h4>Configurazione</h4><p>Canale 137, potenza 7, volume e animazione di avvio.</p></div>
+            <div class="tl-item"><div class="tl-dot"></div><span class="tl-tag">Input</span><h4>Gestione pulsanti</h4><p>Handler per A, B e A+B con azioni radio.</p></div>
+            <div class="tl-item"><div class="tl-dot"></div><span class="tl-tag">VIP</span><h4>Identificazione</h4><p>Funzioni per disegnare i simboli dei profili.</p></div>
+            <div class="tl-item"><div class="tl-dot"></div><span class="tl-tag">Loop</span><h4>Calcolo HUD</h4><p>Loop forever per il conteggio LED a barre.</p></div>
+          </div>
+        </div>
+        <div class="code-block"><div class="code-head"><span class="code-d"></span><span class="code-d"></span><span class="code-d"></span><span class="code-fname">main.ts</span></div><pre class="code-body" id="codeContent"></pre></div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="section-inner">
+      <div class="sh sa"><span class="tag">Protocollo</span><h2>Messaggi Radio</h2></div>
+      <div class="grid3">
+        <div class="ctrl sa d1" style="border-left:3px solid var(--accent)"><h4 style="color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.78rem">Online_SYNC — 64254</h4><p>Avvia la scansione della rete</p></div>
+        <div class="ctrl sa d2" style="border-left:3px solid var(--indigo)"><h4 style="color:var(--indigo);font-family:'JetBrains Mono',monospace;font-size:.78rem">Online_SYNC_Reciving — 44323</h4><p>Risposta di conferma presenza</p></div>
+        <div class="ctrl sa d3" style="border-left:3px solid var(--sky)"><h4 style="color:var(--sky);font-family:'JetBrains Mono',monospace;font-size:.78rem">Ciao_1 — 17031</h4><p>Saluto generico sulla rete</p></div>
+        <div class="ctrl sa d4" style="border-left:3px solid var(--violet)"><h4 style="color:var(--violet);font-family:'JetBrains Mono',monospace;font-size:.78rem">Hi_geget — 60699</h4><p>Identificazione del nodo "geget"</p></div>
+        <div class="ctrl sa d5" style="border-left:3px solid var(--green)"><h4 style="color:var(--green);font-family:'JetBrains Mono',monospace;font-size:.78rem">Hi_zotap — 57456</h4><p>Identificazione del nodo "zotap"</p></div>
+        <div class="ctrl sa d6" style="border-left:3px solid var(--teal)"><h4 style="color:var(--teal);font-family:'JetBrains Mono',monospace;font-size:.78rem">Hi_gagez — 47490</h4><p>Identificazione del nodo "gagez"</p></div>
+      </div>
+    </div>
+  </section>
+</div></main>
+
+<!-- ===================== LED LAB ===================== -->
+<main class="page" id="page-simulator"><div class="page-wrap">
+  <section class="section" style="padding-top:100px">
+    <div class="section-inner">
+      <div class="sh sa"><span class="tag">LED Lab</span><h2>Esplora i pattern del micro:bit</h2><p>Visualizza i pattern reali dal codice sorgente</p></div>
+      <div class="sim-split sa">
+        <div class="sim-panel">
+          <p style="font-size:.74rem;color:var(--text3);margin-bottom:.6rem;text-align:center">Clicca sui LED oppure scegli un preset</p>
+          <div class="sim-grid" id="simMatrix"></div>
+          <div class="sim-btns"><button class="sbtn" onclick="clearSimMatrix()">Pulisci</button><button class="sbtn" onclick="randomSimMatrix()">Casuale</button><button class="sbtn" onclick="invertSimMatrix()">Inverti</button><button class="sbtn" id="simAnimate" onclick="toggleSimAnimation()">Sequenza Boot</button></div>
+          <div class="sim-presets"><h5>Pattern dal codice:</h5><div style="display:flex;flex-wrap:wrap;gap:3px"><button class="pchip" onclick="loadPreset('boot1')">Diamante</button><button class="pchip" onclick="loadPreset('ok')">Conferma</button><button class="pchip" onclick="loadPreset('hi')">Saluto</button><button class="pchip" onclick="loadPreset('geget')">geget</button><button class="pchip" onclick="loadPreset('zotap')">zotap</button><button class="pchip" onclick="loadPreset('gagez')">gagez</button><button class="pchip" onclick="loadPreset('sad')">Reset</button><button class="pchip" onclick="loadPreset('no')">Errore</button><button class="pchip" onclick="loadPreset('hud3')">3 online</button><button class="pchip" onclick="loadPreset('hud12')">12 online</button></div></div>
+        </div>
+        <div class="sim-info">
+          <div class="card"><div class="icon b"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></div><h3>A cosa serve</h3><p class="desc">Visualizza tutti i pattern che il micro:bit mostra nelle varie situazioni del protocollo.</p></div>
+          <div class="card"><div class="icon c"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div><h3>Leggi l'HUD</h3><p class="desc">I preset "3 online" e "12 online" mostrano il display reale. Ogni riga piena = 5 utenti.</p></div>
+          <div class="card"><div class="icon p"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 18l6-6-6-6"/><path d="M8 6l-6 6 6 6"/></svg></div><h3>Genera codice</h3><p class="desc">Disegna un pattern e copia il codice MakeCode.</p><pre id="simExportCode" class="sim-export"></pre></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div></main>
+
+<!-- ===================== GITHUB ===================== -->
+<main class="page" id="page-github"><div class="page-wrap">
+  <section class="section" style="padding-top:100px">
+    <div class="section-inner">
+      <div class="sh sa"><span class="tag">Repository</span><h2>Statistiche GitHub</h2><p>Dati aggiornati in tempo reale</p></div>
+      <div class="gh-stats sa">
+        <div class="gh-stat"><div class="sv" id="gh-stars">—</div><div class="sn">Stars</div></div>
+        <div class="gh-stat"><div class="sv" id="gh-forks">—</div><div class="sn">Forks</div></div>
+        <div class="gh-stat"><div class="sv" id="gh-watchers">—</div><div class="sn">Watchers</div></div>
+        <div class="gh-stat"><div class="sv" id="gh-issues">—</div><div class="sn">Issues</div></div>
+        <div class="gh-stat"><div class="sv" id="gh-size">—</div><div class="sn">Dimensione</div></div>
+      </div>
+      <div class="repo-card sa"><img class="repo-av" id="gh-avatar" src="" alt=""><div><h3 id="gh-fullname" style="font-size:.95rem;font-weight:700">Caricamento...</h3><p id="gh-desc" style="color:var(--text2);font-size:.82rem">Recupero dati...</p><div class="repo-tags" id="gh-tags"></div><p style="font-size:.7rem;color:var(--text3);margin-top:.2rem">Creato: <span id="gh-created">—</span> · Ultimo push: <span id="gh-pushed">—</span></p></div></div>
+      <div class="sh sa" style="margin-top:2.5rem"><span class="tag">Linguaggi</span><h2>Composizione del codice</h2></div>
+      <div class="lang-card sa"><div class="lang-bar" id="langBar"></div><div class="lang-legend" id="langLegend"><p style="color:var(--text3)">Caricamento...</p></div></div>
+      <div class="sh sa" style="margin-top:2.5rem"><span class="tag">Cronologia</span><h2>Ultimi commit</h2></div>
+      <div class="commits sa" id="commitsList"><div class="commit"><span class="commit-sha">...</span><span class="commit-msg">Caricamento...</span></div></div>
+    </div>
+  </section>
+</div></main>
+
+<!-- ===================== WIKI ===================== -->
+<main class="page" id="page-wiki"><div class="page-wrap">
+  <section class="section" style="padding-top:100px">
+    <div class="section-inner">
+      <div class="sh sa"><span class="tag">Documentazione</span><h2>Wiki del progetto</h2><p>La documentazione completa su GitHub</p></div>
+      <div class="grid-auto">
+        <a href="https://github.com/pgiudici13/MicrobitRadiov3/wiki" target="_blank" class="wiki-card sa d1"><h4>Home della Wiki</h4><p>Panoramica generale e guide introduttive.</p><span class="wl">Apri →</span></a>
+        <a href="https://github.com/pgiudici13/MicrobitRadiov3/wiki" target="_blank" class="wiki-card sa d2"><h4>Setup e Installazione</h4><p>Come importare e configurare il progetto.</p><span class="wl">Leggi →</span></a>
+        <a href="https://github.com/pgiudici13/MicrobitRadiov3/wiki" target="_blank" class="wiki-card sa d3"><h4>Protocollo Radio</h4><p>Documentazione tecnica su messaggi e sincronizzazione.</p><span class="wl">Vai →</span></a>
+        <a href="https://github.com/pgiudici13/MicrobitRadiov3/wiki" target="_blank" class="wiki-card sa d4"><h4>Profili VIP</h4><p>Il sistema di riconoscimento dei dispositivi.</p><span class="wl">Scopri →</span></a>
+        <a href="https://github.com/pgiudici13/MicrobitRadiov3/wiki" target="_blank" class="wiki-card sa d5"><h4>Display HUD</h4><p>Il sistema di visualizzazione a barre LED.</p><span class="wl">Apri →</span></a>
+        <a href="https://github.com/pgiudici13/MicrobitRadiov3/discussions" target="_blank" class="wiki-card sa d6"><h4>Community</h4><p>Partecipa alle discussioni e richieste.</p><span class="wl">Vai →</span></a>
+      </div>
+    </div>
+  </section>
+</div></main>
+
+<!-- ===================== ABOUT ===================== -->
+<main class="page" id="page-about"><div class="page-wrap">
+  <section class="section" style="padding-top:100px">
+    <div class="section-inner">
+      <div class="about-hero sa"><img class="about-img" id="aboutAvatar" src="" alt="pgiudici13"><div><span class="tag">Autore</span><h2 style="font-size:1.8rem">pgiudici13</h2><p style="color:var(--text2);margin-top:.2rem;font-size:.9rem">Ideatore e sviluppatore di MicrobitRadioV3.</p><div style="margin-top:.8rem"><a href="https://github.com/pgiudici13" target="_blank" class="btn btn-p" style="padding:7px 14px;font-size:.78rem"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> Profilo GitHub</a></div></div></div>
+      <div class="sh sa" style="margin-top:2rem"><span class="tag">Specifiche</span><h2>Dettagli tecnici</h2></div>
+      <div class="grid3">
+        <div class="card sa d1"><div class="icon b"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div><h3>Hardware</h3><p class="desc">BBC micro:bit v2 — ARM Cortex-M4, 512KB Flash, radio 2.4GHz, matrice LED 5x5.</p></div>
+        <div class="card sa d2"><div class="icon c"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg></div><h3>Ambiente</h3><p class="desc">Microsoft MakeCode con TypeScript. Deploy via USB o Bluetooth.</p></div>
+        <div class="card sa d3"><div class="icon g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg></div><h3>Rete radio</h3><p class="desc">Canale 137, potenza 7, messaggi codificati tramite enum.</p></div>
+      </div>
+      <div class="sh sa" style="margin-top:2.5rem"><span class="tag">Progetti</span><h2>Altri repository</h2></div>
+      <div class="grid-auto" id="userRepos"><div class="card sa"><p style="text-align:center;color:var(--text3)">Caricamento...</p></div></div>
+    </div>
+  </section>
+</div></main>
+
+<footer class="footer"><div class="footer-links"><a href="#" data-page="home">Home</a><a href="#" data-page="features">Funzionalità</a><a href="#" data-page="code">Codice</a><a href="#" data-page="simulator">LED Lab</a><a href="#" data-page="github">GitHub</a><a href="#" data-page="wiki">Wiki</a><a href="https://github.com/pgiudici13/MicrobitRadiov3" target="_blank">Repository</a></div><p>© 2026 MicrobitRadioV3 — <a href="https://github.com/pgiudici13" target="_blank" style="color:var(--accent);text-decoration:none">pgiudici13</a></p></footer>
+
+<script src="app.js"></script>
+</body>
+</html>
