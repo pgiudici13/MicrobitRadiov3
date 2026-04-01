@@ -3,6 +3,15 @@
   <p><strong>Un sistema semplice e avanzato per comunicare e sincronizzare vari micro:bit via Radio.</strong></p>
   
   <p>
+    <a href="https://pgiudici13.github.io/MicrobitRadiov3/">
+      <img src="https://img.shields.io/badge/Sito_Web-Pagina_Ufficiale-1081c2?style=for-the-badge">
+    </a>
+    <a href="https://makecode.microbit.org/#github:pgiudici13/MicrobitRadiov3">
+      <img src="https://img.shields.io/badge/MakeCode-Importa_Progetto-23c210?style=for-the-badge">
+    </a>
+  </p>
+
+  <p>
     <a href="https://github.com/pgiudici13"><img src="https://img.shields.io/badge/Autore-pgiudici13-blue?style=for-the-badge&logo=github"></a>
     <img src="https://img.shields.io/badge/Hardware-micro:bit-brightgreen?style=for-the-badge&logo=microbit">
     <img src="https://img.shields.io/badge/Linguaggio-TypeScript-blue?style=for-the-badge&logo=typescript">
@@ -77,7 +86,7 @@ stateDiagram-v2
 
 ---
 
-## Struttura del Progetto (Mappa Mentale)
+## Struttura del Progetto (Mappa delle Funzionalità)
 
 Ecco uno schema semplice diviso per categorie che riassume tutto ciò di cui si occupa il codice di RadioV3:
 
@@ -142,6 +151,15 @@ Per far funzionare il codice (`ptx.json`) ci appoggiamo a librerie esterne molto
 > È super importante fare una piccola **modifica manuale nel codice** prima di cominciare ad usarlo, altrimenti funzionerà a metà.
 
 Per evitare che troppi dispositivi inesperti intasino le linee, devi prima aprire il codice del progetto e inserire **il tuo nome identificativo**. Finché la variabile col nome non è compilata e convalidata nel codice, il tuo micro:bit saprà solo "ascoltare" (cioè riceverà tutti i messaggi) ma non sarà autorizzato a "parlare" ed inviare risposte al resto della classe!
+
+---
+
+## Link Utili e Accesso Veloce
+
+Se vuoi accedere istantaneamente al codice o visualizzare l'interfaccia dedicata: 
+
+* [**Sito Web del Progetto**](https://pgiudici13.github.io/MicrobitRadiov3/) - Pagina ufficiale ospitata su GitHub Pages.
+* [**Importa in MakeCode**](https://makecode.microbit.org/#github:pgiudici13/MicrobitRadiov3) - Clicca qui per aprire in automatico la mappa di blocchi logici del programma direttamente sul sito ufficiale di Microsoft MakeCode.
 
 ---
 
