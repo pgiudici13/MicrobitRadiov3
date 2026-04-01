@@ -20,9 +20,9 @@
 
 ---
 
-## Struttura della Rete
+## Architettura di Rete
 
-La rete funziona come un Hub centrale. Lo schema illustra in modo lineare il processo di identificazione degli utenti connessi:
+Il sistema basa le proprie fondamenta su una topologia di trasmissione broadcast-centrica. Nessun nodo è esclusivamente server; tutti agiscono come *peer* indipendenti all'interno dell'infrastruttura condivisa sul canale.
 
 ```mermaid
 graph LR
@@ -36,29 +36,77 @@ graph LR
 
 ---
 
-## Panoramica delle Funzionalità
+## Elaborazione dei Flussi
+
+Quando il protocollo in background rileva una modulazione di frequenza, esegue un "routing" per indirizzare i bit ricevuti alle loro funzioni associate. Questo diagramma di flusso illustra la logica ramificata:
+
+```mermaid
+flowchart TD
+    A([Segnale in Ingresso]) --> B{Analisi del Payload}
+    B -- ID Profilo --> C[Check Identificativo]
+    B -- Stringa Testuale --> D[Sospensione Attività Baseline]
+    B -- Ping di Sync --> E[Incremento Ledger SYNC]
+    
+    C --> F{Whitelist?}
+    F -- Si --> G[Routine Grafica Dedicata]
+    F -- No --> H[Scarto Silenzioso del Pacchetto]
+    
+    D --> I[Forzatura Scrolling a Schermo]
+    E --> J[Attesa Ricalcolo Variabile]
+```
+
+---
+
+## Macchina a Stati del Dispositivo
+
+Il comportamento del software è descrivibile tramite una macchina a stati finiti (FSM). Il micro_bit passa da stato passivo ("Attesa") a stati attivi solo tramite precise condizioni:
+
+```mermaid
+stateDiagram-v2
+    [*] --> Attesa
+    Attesa --> Trasmissione : Pressione Input (A / A+B)
+    Trasmissione --> Attesa : Output Inviato
+    Attesa --> Disegno_HUD : Interrogazione Grafica (Tasto B)
+    Disegno_HUD --> Attesa : Timeout Interfaccia
+    Attesa --> Ricezione : Interrupt Radio
+    Ricezione --> Esecuzione_VIP : Rilevato Profilo Noto
+    Ricezione --> Alert_Testuale : Dati Testo Generici
+    Esecuzione_VIP --> Attesa : Termine Animazione
+    Alert_Testuale --> Attesa : Fine Scorrimento Testo
+```
+
+---
+
+## Panoramica a Mappa Mentale
+
+Una sintesi radiale dei sotto-settori informatici toccati durante il disegno tecnico del software e delle limitazioni superate in fase di design:
+
+```mermaid
+mindmap
+  root((RadioV3))
+    Protocollo Rete
+      Comunicazione Broadcast
+      Canale Sicuro 137
+      Massimale Tx 7
+    Interfaccia Grafica
+      Estensione Microturtle
+      Piano Cartesiano X/Y
+      Draw Rendering a Barre
+    Sicurezza
+      Gestione Identificativi
+      Lock di Trasmissione
+    Subroutine Audio
+      Campionatura Frequenze
+      Interrupt Prioritario
+```
 
 <details open>
-<summary><b>HUD (Heads-Up Display) a Barre</b></summary>
+<summary><b>Dettaglio Funzioni Essenziali</b></summary>
 <br>
 
-Le librerie integrate consentono di trasformare lo schermo in un indicatore a barre verticali o orizzontali. I LED si accendono progressivamente per indicare quante schede (hardware testati fino a 20 utenze) comunicano nell'infrastruttura condivisa.
-
-</details>
-
-<details open>
-<summary><b>Profilazione VIP e Output Acustico</b></summary>
-<br>
-
-Identificativi pre-registrati godono di logiche di eccezione in cui la normale stampa degli eventi viene arrestata temporaneamente. Il micro_bit procede alla renderizzazione di un simbolo dedicato su matrice associandolo alla riproduzione parallela di file sonori in background.
-
-</details>
-
-<details>
-<summary><b>Gestione Flusso Testuale Prioritario</b></summary>
-<br>
-
-Messaggistiche asincrone sospendono le attività di default. Garantendo il trasferimento orizzontale automatico dei caratteri sullo schermo previene la mancata lettura manuale tra un loop visivo e l'altro.
+* **Heads-Up Display (HUD) a Barre**: Rendering a colonne dei LED per contare fisicamente i ritorni (fino a 20).
+* **Profilazione e Audio VIP**: Logiche di eccezione per identificativi noti con riproduzione parallela di file `.MIDI` ed icone isolate.
+* **Priorità Flusso Stringhe**: Gestione asincrona che costringe a schermo interi buffer testuali prevenendo omissioni di dati.
 
 </details>
 
@@ -70,7 +118,7 @@ Mappatura dei pattern di inserimento tramite interattori fisici e relative conse
 
 | Ingresso Fisico | Azione di Rete | Conseguenza sul Display |
 | :---: | :--- | :--- |
-| <kbd>A</kbd> | Invio Trasmissione Unilaterale | Risoluzione in fade-in dei loghi associati in board riceventi specifiche. |
+| <kbd>A</kbd> | Invio Trasmissione Unilaterale | Risoluzione in fade-in dei loghi associati nelle board che accettano il nodo. |
 | <kbd>A</kbd> + <kbd>B</kbd> | Interrogazione Broad Globale | Reset e ridisegno scalare della matrice alla conta dei ritorni positivi. |
 | <kbd>B</kbd> | Accesso Interfaccia Dati | Rendering in tempo reale delle utenze aggregate via calcoli proporzionali per pixel. |
 
