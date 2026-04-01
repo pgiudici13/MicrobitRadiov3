@@ -1,15 +1,15 @@
 enum RadioMessage {
-    message1 = 49434,
-    BLOCK = 28732,
-    OnlineSYNCReciving = 27820,
-    HiGagez = 35590,
-    HiZotap = 32430,
     HiGeget = 2955,
-    OnlineSYNC = 7840
+    OnlineSYNC = 7840,
+    OnlineSYNCReciving = 27820,
+    BLOCK = 28732,
+    HiZotap = 32430,
+    HiGagez = 35590,
+    message1 = 49434
 }
 radio.onReceivedMessage(RadioMessage.OnlineSYNC, function () {
     basic.pause(randint(5, 1000))
-    radio.sendMessage(RadioMessage.OnlineSYNCReciving)
+    radio.sendMessage(RadioMessage.message1)
 })
 input.onButtonPressed(Button.A, function () {
     if (status == 0) {
@@ -93,7 +93,7 @@ input.onButtonPressed(Button.AB, function () {
     if (status == 0) {
         status = 1
         online = 0
-        radio.sendMessage(RadioMessage.OnlineSYNC)
+        radio.sendMessage(RadioMessage.message1)
         SYNCDID += 1
         SYNCDOOK = 0
         for (let index = 0; index < 2; index++) {
@@ -214,7 +214,7 @@ input.onGesture(Gesture.ScreenUp, function () {
         if (input.isGesture(Gesture.ScreenUp)) {
             if (input.buttonIsPressed(Button.B)) {
                 basic.showIcon(IconNames.Ghost)
-                radio.sendMessage(RadioMessage.BLOCK)
+                radio.sendMessage(RadioMessage.message1)
                 basic.pause(100)
                 basic.clearScreen()
             }
