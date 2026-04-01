@@ -82,20 +82,23 @@ stateDiagram-v2
 Ecco uno schema semplice diviso per categorie che riassume tutto ciò di cui si occupa il codice di RadioV3:
 
 ```mermaid
-mindmap
-  root((Progetto Radio))
-    Rete Radio
-      Canale Pubblico 137
-      Massima Portata del Segnale
-    Disegni a Schermo
-      Barre Grafiche
-      Libreria Turtle
-    Sicurezza
-      Nomi Speciali Ammessi
-      Blocco degli Intrusi
-    Audio e Suoni
-      Allarmi Bleep
-      Canzoncine per Amici
+flowchart LR
+    Root((Progetto Radio)) --> Rete[Rete Radio]
+    Root --> Vista[Disegni a Schermo]
+    Root --> Sec[Sicurezza]
+    Root --> Audio[Audio e Suoni]
+    
+    Rete --> R1(Canale Pubblico 137)
+    Rete --> R2(Massima Portata)
+    
+    Vista --> V1(Barre Grafiche)
+    Vista --> V2(Libreria Turtle)
+    
+    Sec --> S1(Nomi Speciali Ammessi)
+    Sec --> S2(Blocco degli Intrusi)
+    
+    Audio --> A1(Allarmi Bleep)
+    Audio --> A2(Canzoncine per Amici)
 ```
 
 <details open>
