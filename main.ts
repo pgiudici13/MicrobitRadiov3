@@ -1,32 +1,27 @@
 enum RadioMessage {
-    Ciao_1 = 17031,
-    BLOCK = 28732,
-    Online_SYNC_Reciving = 44323,
-    Hi_gagez = 47490,
     message1 = 49434,
-    Hi_zotap = 57456,
-    Hi_geget = 60699,
-    Online_SYNC = 64254
+    BLOCK = 28732,
+    OnlineSYNCReciving = 27820,
+    HiGagez = 35590,
+    HiZotap = 32430,
+    HiGeget = 2955,
+    OnlineSYNC = 7840
 }
-radio.onReceivedMessage(RadioMessage.Hi_geget, function () {
-    status = 3
-    basic.clearScreen()
-    music.play(music.stringPlayable("F A C5 A F A C5 - ", 500), music.PlaybackMode.InBackground)
-    geget_ID()
-    basic.pause(500)
-    Hi()
+radio.onReceivedMessage(RadioMessage.OnlineSYNC, function () {
+    basic.pause(randint(5, 1000))
+    radio.sendMessage(RadioMessage.OnlineSYNCReciving)
 })
 input.onButtonPressed(Button.A, function () {
     if (status == 0) {
         status = 2
         if (control.deviceName() == "geget") {
-            radio.sendMessage(RadioMessage.message1)
+            radio.sendMessage(RadioMessage.HiGeget)
             ok()
         } else if (control.deviceName() == "zotap") {
-            radio.sendMessage(RadioMessage.message1)
+            radio.sendMessage(RadioMessage.HiZotap)
             ok()
         } else if (control.deviceName() == "gagez") {
-            radio.sendMessage(RadioMessage.message1)
+            radio.sendMessage(RadioMessage.HiGagez)
             ok()
         } else {
             basic.showLeds(`
@@ -49,16 +44,13 @@ input.onButtonPressed(Button.A, function () {
         }
     }
 })
-radio.onReceivedMessage(RadioMessage.Online_SYNC, function () {
-    basic.pause(1000)
-    radio.sendMessage(RadioMessage.message1)
-    SYNC_give += 1
-})
-radio.onReceivedMessage(RadioMessage.Online_SYNC_Reciving, function () {
-    if (SYNC_did > 0) {
-        online += 1
-        Online_reciving_times += 1
-    }
+radio.onReceivedMessage(RadioMessage.HiGeget, function () {
+    status = 3
+    basic.clearScreen()
+    music.play(music.stringPlayable("F A C5 A F A C5 - ", 500), music.PlaybackMode.InBackground)
+    geget_ID()
+    basic.pause(500)
+    Hi()
 })
 function ok () {
     led.setBrightness(50)
@@ -101,9 +93,9 @@ input.onButtonPressed(Button.AB, function () {
     if (status == 0) {
         status = 1
         online = 0
-        radio.sendMessage(RadioMessage.message1)
-        SYNC_did += 1
-        SYNC_do_ok = 0
+        radio.sendMessage(RadioMessage.OnlineSYNC)
+        SYNCDID += 1
+        SYNCDOOK = 0
         for (let index = 0; index < 2; index++) {
             basic.showLeds(`
                 # # # . #
@@ -148,8 +140,8 @@ radio.onReceivedString(function (receivedString) {
 input.onButtonPressed(Button.B, function () {
     if (status == 0) {
         status = 1
-        if (SYNC_do_ok == 0) {
-            if (SYNC_did > 0) {
+        if (SYNCDOOK == 0) {
+            if (SYNCDID > 0) {
                 if (online > 0) {
                     // Riga 0: sempre visibile quando ci sono utenti online
                     turtle.setPosition(0, 0)
@@ -181,7 +173,7 @@ input.onButtonPressed(Button.B, function () {
                     turtle.setPosition(4, 4)
                     basic.pause(2000)
                     status = 0
-                    SYNC_do_ok = 1
+                    SYNCDOOK = 1
                     basic.clearScreen()
                 } else {
                     turtle.pen(TurtlePenMode.Up)
@@ -217,35 +209,30 @@ input.onButtonPressed(Button.B, function () {
     }
     status = 0
 })
-radio.onReceivedMessage(RadioMessage.Hi_zotap, function () {
-    status = 3
-    basic.clearScreen()
-    music.play(music.stringPlayable("E B C5 A B G A - ", 280), music.PlaybackMode.InBackground)
-    zotap_ID()
-    basic.pause(500)
-    basic.clearScreen()
-    Hi()
-})
 input.onGesture(Gesture.ScreenUp, function () {
     if (status == 0) {
         if (input.isGesture(Gesture.ScreenUp)) {
             if (input.buttonIsPressed(Button.B)) {
                 basic.showIcon(IconNames.Ghost)
-                radio.sendMessage(RadioMessage.message1)
+                radio.sendMessage(RadioMessage.BLOCK)
                 basic.pause(100)
                 basic.clearScreen()
             }
         }
     }
 })
-radio.onReceivedMessage(RadioMessage.Hi_gagez, function () {
+radio.onReceivedMessage(RadioMessage.HiZotap, function () {
     status = 3
     basic.clearScreen()
-    music.play(music.stringPlayable("E B C5 A B G A - ", 280), music.PlaybackMode.InBackground)
-    gagez_ID()
+    music.play(music.stringPlayable("F A C5 A F A C5 - ", 500), music.PlaybackMode.InBackground)
+    zotap_ID()
     basic.pause(500)
-    basic.clearScreen()
     Hi()
+})
+radio.onReceivedMessage(RadioMessage.OnlineSYNCReciving, function () {
+    if (SYNCDID > 0) {
+        online += 1
+    }
 })
 function Hi () {
     basic.clearScreen()
@@ -312,15 +299,17 @@ function geget_ID () {
         # . . # .
         `)
 }
-radio.onReceivedMessage(RadioMessage.message1, function () {
-    basic.showIcon(IconNames.Sad)
-    control.reset()
+radio.onReceivedMessage(RadioMessage.HiGagez, function () {
+    status = 3
+    basic.clearScreen()
+    music.play(music.stringPlayable("F A C5 A F A C5 - ", 500), music.PlaybackMode.InBackground)
+    gagez_ID()
+    basic.pause(500)
+    Hi()
 })
-let SYNC_do_ok = 0
-let Online_reciving_times = 0
-let SYNC_give = 0
+let SYNCDOOK = 0
 let online = 0
-let SYNC_did = 0
+let SYNCDID = 0
 let XY3_view = 0
 let XY2_view = 0
 let Y_view = 0
@@ -336,7 +325,7 @@ Y_view = -1
 XY2_view = -1
 // -1 = riga 2 non attiva
 XY3_view = -1
-SYNC_did = 0
+SYNCDID = 0
 online = 0
 radio.setGroup(137)
 // Potenza massima (0-7)
