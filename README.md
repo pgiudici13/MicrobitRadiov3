@@ -59,7 +59,7 @@ flowchart TD
     
     C --> F{Lo conosco?}
     F -- Si --> G[Mostro la sua Icona Speciale e Suono]
-    F -- No --> H[Ignoro il messaggio]
+    F -- No --> H[Mostro un Diamante e Suono]
     
     D --> I[Faccio scorrere il testo sullo schermo]
     E --> J[Attendo altre risposte]
@@ -129,7 +129,7 @@ Cosa succede quando premi i bottoni fisici sulla scocca del micro:bit.
 
 | Pulsante | Azione | Cosa succede sullo schermo |
 | :---: | :--- | :--- |
-| <kbd>A</kbd> | Invia Saluto | Le altre schede (se ti conoscono) accenderanno i LED per salutarti. |
+| <kbd>A</kbd> | Invia Saluto | Invia un saluto alla rete. Tutti vedranno un diamante, o un'animazione speciale se sei un profilo VIP. |
 | <kbd>A</kbd> + <kbd>B</kbd> | Conta Utenti | Azzera il display e lancia il controllo radio per vedere chi c'è in giro. |
 | <kbd>B</kbd> | Aggiorna Schermo | Ridisegna il grafico dal vivo in base all'ultimo "Conta Utenti" effettuato. |
 
@@ -147,10 +147,10 @@ Per far funzionare il codice (`ptx.json`) ci appoggiamo a librerie esterne molto
 
 ## Da fare prima di usarlo...
 
-> [!WARNING]
-> È super importante fare una piccola **modifica manuale nel codice** prima di cominciare ad usarlo, altrimenti funzionerà a metà.
+> [!NOTE]
+> **Tutti possono partecipare!** A differenza delle versioni precedenti, ora chiunque può inviare e ricevere messaggi e far parte del conteggio HUD senza configurazioni.
 
-Per evitare che troppi dispositivi inesperti intasino le linee, devi prima aprire il codice del progetto e inserire **il tuo nome identificativo**. Finché la variabile col nome non è compilata e convalidata nel codice, il tuo micro:bit saprà solo "ascoltare" (cioè riceverà tutti i messaggi) ma non sarà autorizzato a "parlare" ed inviare risposte, oppure crea una discussione dove dici il nome del microbit e te lo aggiungiamo alla lista
+Tuttavia, se vuoi sbloccare le **funzioni VIP** (un'icona speciale dedicata e una campanella d'avviso personalizzata quando ti connetti), puoi aprire una discussione su GitHub indicando il nome del tuo micro:bit e ti aggiungeremo alla lista ufficiale nel codice!
 
 ---
 
