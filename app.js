@@ -1,28 +1,72 @@
 // ========== MicrobitRadioV3 — App.js ==========
 
 // === INTRO E LIQUID GLASS INIT ===
+// === INTRO E LIQUID GLASS INIT ===
 window.addEventListener('DOMContentLoaded', () => {
-  // Apple Liquid Glass dynamic glow per tutte le card
-  document.querySelectorAll('.card, .mini, .ctrl, .mod, .gh-stat, .repo-card, .lang-card, .wiki-card, .sync-box, .arch').forEach(el => {
-    const g = document.createElement('div');
-    g.className = 'glass-glow';
-    el.appendChild(g);
+  const intro = document.getElementById('introOverlay');
+  
+  // Apple Liquid Glass 2.0 (Local + Border logic)
+  const glassSelectors = '.card, .mini, .ctrl, .mod, .gh-stat, .repo-card, .lang-card, .wiki-card, .sync-box, .arch, .btn-p, .btn-s';
+  document.querySelectorAll(glassSelectors).forEach(el => {
+    el.addEventListener('mousemove', e => {
+      const rect = el.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      el.style.setProperty('--x', `${x}px`);
+      el.style.setProperty('--y', `${y}px`);
+      
+      // Magnetic effect for icons/buttons
+      if (el.classList.contains('btn-p') || el.classList.contains('icon') || el.classList.contains('repo-tag')) {
+        const mx = (x - rect.width / 2) * 0.15;
+        const my = (y - rect.height / 2) * 0.15;
+        el.style.transform = `translate(${mx}px, ${my}px) translateY(-5px) scale(1.05)`;
+      }
+    });
+
+    el.addEventListener('mouseleave', () => {
+      if (el.classList.contains('btn-p') || el.classList.contains('icon') || el.classList.contains('nav-logo-icon')) {
+        el.style.transform = '';
+      }
+    });
   });
 
-  const intro = document.getElementById('introOverlay');
+  // Logo magnetic specifically
+  const logoIcon = document.querySelector('.nav-logo-icon');
+  if(logoIcon) {
+    logoIcon.classList.add('icon'); // to trigger magnetic
+    logoIcon.parentNode.style.perspective = '1000px';
+  }
+
+  // Intro particles (sparkles around the star)
+  const ip = document.getElementById('introParticles');
+  if (ip) {
+    for (let i = 0; i < 30; i++) {
+      const s = document.createElement('div');
+      s.className = 'gemini-sparkle';
+      const size = Math.random() * 5 + 2;
+      s.style.width = `${size}px`;
+      s.style.height = `${size}px`;
+      s.style.top = `${Math.random() * 100}%`;
+      s.style.left = `${Math.random() * 100}%`;
+      s.style.animationDelay = `${Math.random() * 3}s`;
+      s.style.background = `rgba(255, 255, 255, ${Math.random() * 0.6})`;
+      ip.appendChild(s);
+    }
+  }
+
   if (!intro) return;
-  // Esplosione animata dopo 2.3s
+  // Esplosione Dark Gemini dopo 3s
   setTimeout(() => {
     intro.classList.add('explode');
     setTimeout(() => {
       intro.remove();
-      // Trigger scroll animations once intro is gone
+      document.body.classList.remove('body-intro');
       observeAnimations();
-    }, 1000);
-  }, 2300);
+    }, 1800);
+  }, 3000);
 });
 
-// === PARTICLES (background) & MOUSE GLOW ===
+// === PARTICLES (Electric Lattice Grid) & MOUSE GLOW ===
 (function() {
   const c = document.getElementById('particlesCanvas');
   if (!c) return;
@@ -32,15 +76,10 @@ window.addEventListener('DOMContentLoaded', () => {
   const glow = document.getElementById('mouseGlow');
   
   window.addEventListener('mousemove', e => { 
-    mx = e.clientX; 
-    my = e.clientY; 
+    mx = e.clientX; my = e.clientY; 
     document.documentElement.style.setProperty('--cursor-x', mx + 'px');
     document.documentElement.style.setProperty('--cursor-y', my + 'px');
-    if (glow) {
-      glow.style.left = mx + 'px';
-      glow.style.top = my + 'px';
-      glow.classList.add('active');
-    }
+    if (glow) { glow.style.left = mx + 'px'; glow.style.top = my + 'px'; glow.classList.add('active'); }
   });
   window.addEventListener('mouseout', () => { 
     if(glow) glow.classList.remove('active');
@@ -48,57 +87,79 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   const resize = () => { c.width = innerWidth; c.height = innerHeight; };
-  resize();
-  addEventListener('resize', resize);
+  resize(); addEventListener('resize', resize);
+
   class P {
     constructor() { this.reset(); }
     reset() {
       this.x = Math.random() * c.width;
       this.y = Math.random() * c.height;
-      this.vx = (Math.random() - 0.5) * 0.18;
-      this.vy = (Math.random() - 0.5) * 0.18;
-      this.s = Math.random() * 1.2 + 0.4;
-      this.o = Math.random() * 0.12 + 0.02;
+      this.vx = (Math.random() - 0.5) * 0.12;
+      this.vy = (Math.random() - 0.5) * 0.12;
+      this.s = Math.random() * 2 + 0.5;
+      this.o = Math.random() * 0.2 + 0.1;
+      this.color = Math.random() > 0.5 ? '79, 142, 255' : '139, 92, 246';
     }
     update() {
-      const dx = mx - this.x;
-      const dy = my - this.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 140) {
-        this.x -= dx * 0.015;
-        this.y -= dy * 0.015;
+      const dx = mx - this.x, dy = my - this.y;
+      const d = Math.sqrt(dx*dx + dy*dy);
+      if (d < 200) {
+        this.x -= dx * 0.005;
+        this.y -= dy * 0.005;
       }
-      this.x += this.vx;
-      this.y += this.vy;
+      this.x += this.vx; this.y += this.vy;
       if (this.x < 0 || this.x > c.width || this.y < 0 || this.y > c.height) this.reset();
     }
     draw() {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.s, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(79,142,255,${this.o})`;
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(this.x, this.y, this.s, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(${this.color}, ${this.o * 1.5})`; ctx.fill();
     }
   }
-  for (let i = 0; i < 45; i++) pts.push(new P());
+
+  const gridSpacing = 65;
+  function drawGrid() {
+    ctx.lineWidth = 1;
+    for (let x = 0; x < c.width; x += gridSpacing) {
+      for (let y = 0; y < c.height; y += gridSpacing) {
+        const dx = mx - x, dy = my - y;
+        const d = Math.sqrt(dx*dx + dy*dy);
+        const shift = d < 220 ? (1 - d/220) * 12 : 0;
+        const sx = x + (dx/d || 0) * shift;
+        const sy = y + (dy/d || 0) * shift;
+        
+        ctx.beginPath();
+        ctx.strokeStyle = d < 200 ? `rgba(79, 142, 255, ${0.25 * (1 - d/200)})` : 'rgba(79, 142, 255, 0.08)';
+        ctx.moveTo(sx - 2, sy); ctx.lineTo(sx + 2, sy);
+        ctx.moveTo(sx, sy - 2); ctx.lineTo(sx, sy + 2);
+        ctx.stroke();
+
+        // Electric connections
+        if (d < 140) {
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(139, 92, 246, ${0.2 * (1 - d/140)})`;
+          ctx.moveTo(sx, sy);
+          ctx.lineTo(mx, my);
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  for (let i = 0; i < 60; i++) pts.push(new P());
   (function loop() {
     ctx.clearRect(0, 0, c.width, c.height);
+    drawGrid();
     pts.forEach(p => { p.update(); p.draw(); });
     for (let i = 0; i < pts.length; i++) {
       for (let j = i + 1; j < pts.length; j++) {
         const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
-        const d = Math.sqrt(dx * dx + dy * dy);
-        let distThreshold = 90;
-        
-        // Se vicino al mouse aumenta la distanza di trigger e aggiusta raggio
-        const mDist1 = Math.sqrt((pts[i].x - mx)**2 + (pts[i].y - my)**2);
-        const mDist2 = Math.sqrt((pts[j].x - mx)**2 + (pts[j].y - my)**2);
-        if(mDist1 < 140 || mDist2 < 140) distThreshold = 140;
-
-        if (d < distThreshold) {
-          ctx.beginPath();
-          ctx.moveTo(pts[i].x, pts[i].y);
-          ctx.lineTo(pts[j].x, pts[j].y);
-          ctx.strokeStyle = `rgba(79,142,255,${0.03 * (1 - d / distThreshold)})`;
+        const d = Math.sqrt(dx*dx + dy*dy);
+        let thresh = 110;
+        const m1 = Math.sqrt((pts[i].x-mx)**2 + (pts[i].y-my)**2);
+        if (m1 < 180) thresh = 180;
+        if (d < thresh) {
+          ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y);
+          ctx.strokeStyle = `rgba(79, 142, 255, ${0.12 * (1 - d/thresh)})`;
           ctx.stroke();
         }
       }
@@ -107,11 +168,40 @@ window.addEventListener('DOMContentLoaded', () => {
   })();
 })();
 
-// === NAVBAR scroll ===
+// === NAVBAR scroll & Progress ===
 const navbar = document.getElementById('navbar');
-addEventListener('scroll', () => navbar.classList.toggle('scrolled', scrollY > 40));
-document.getElementById('navToggle').addEventListener('click', () => {
-  document.getElementById('navLinks').classList.toggle('open');
+const scrollProgress = document.createElement('div');
+scrollProgress.className = 'nav-scroll-progress';
+if (navbar) navbar.appendChild(scrollProgress);
+
+const btt = document.getElementById('backToTop');
+
+window.addEventListener('scroll', () => {
+  const winScroll = window.pageYOffset || document.documentElement.scrollTop;
+  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrolled = height > 0 ? winScroll / height : 0;
+
+  if (scrollProgress) scrollProgress.style.transform = `scaleX(${scrolled})`;
+  
+  if (navbar) {
+    navbar.classList.toggle('scrolled', winScroll > 50);
+  }
+
+  if (btt) {
+    btt.classList.toggle('visible', winScroll > 600);
+  }
+});
+
+if (btt) {
+  btt.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+const nt = document.getElementById('navToggle');
+if(nt) nt.addEventListener('click', () => {
+  const nl = document.getElementById('navLinks');
+  if(nl) nl.classList.toggle('open');
 });
 
 // === SPA NAVIGATION ===

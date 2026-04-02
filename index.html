@@ -8,29 +8,41 @@
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%234f8eff'/></svg>">
 </head>
-<body>
+<body class="body-intro">
 
 <!-- ====== FULLSCREEN INTRO ====== -->
 <div class="intro-overlay" id="introOverlay">
   <div class="intro-bg-glow"></div>
+  
+  <div class="intro-rings">
+    <div class="intro-ring r1"></div>
+    <div class="intro-ring r2"></div>
+    <div class="intro-ring r3"></div>
+    <div class="intro-ring r4"></div>
+  </div>
+
+  <div class="intro-shockwave"></div>
+
   <div class="gemini-container">
-    <div class="gemini-sparkle s1"></div><div class="gemini-sparkle s2"></div><div class="gemini-sparkle s3"></div>
     <div class="gemini-star">
-      <svg viewBox="0 0 100 100" width="120" height="120" class="g-star-svg">
-        <path class="g-path" d="M50 0 C50 40, 60 50, 100 50 C60 50, 50 60, 50 100 C50 60, 40 50, 0 50 C40 50, 50 40, 50 0 Z" fill="url(#gGradient)"/>
+      <svg viewBox="0 0 100 100" width="140" height="140" class="g-star-svg">
+        <path class="g-path" d="M50 0 C50 40, 60 50, 100 50 C60 50, 50 60, 50 100 C50 60, 40 50, 0 50 C40 50, 50 40, 50 0 Z" fill="url(#gGradientIntro)"/>
         <defs>
-          <linearGradient id="gGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#38bdf8"/>
-            <stop offset="33%" stop-color="#4f8eff"/>
-            <stop offset="66%" stop-color="#8b5cf6"/>
-            <stop offset="100%" stop-color="#fb7185"/>
+          <linearGradient id="gGradientIntro" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="rgba(255,255,255,1)"/>
+            <stop offset="100%" stop-color="rgba(79,142,255,0.4)"/>
           </linearGradient>
         </defs>
       </svg>
     </div>
+    <div class="gemini-particles" id="introParticles"></div>
   </div>
+
   <div class="intro-text-g">
-    <p class="intro-m">Sistema Inizializzato</p>
+    <div class="intro-status-line">
+      <span class="status-dot"></span>
+      <p class="intro-m">LOADING PROTOCOL V3</p>
+    </div>
     <p class="intro-t">MicrobitRadioV3</p>
   </div>
 </div>
@@ -300,6 +312,10 @@
 </div></main>
 
 <footer class="footer"><div class="footer-links"><a href="#" data-page="home">Home</a><a href="#" data-page="features">Funzionalità</a><a href="#" data-page="code">Codice</a><a href="#" data-page="simulator">LED Lab</a><a href="#" data-page="github">GitHub</a><a href="#" data-page="wiki">Wiki</a><a href="https://github.com/pgiudici13/MicrobitRadiov3" target="_blank">Repository</a></div><p>© 2026 MicrobitRadioV3 — <a href="https://github.com/pgiudici13" target="_blank" style="color:var(--accent);text-decoration:none">pgiudici13</a></p></footer>
+
+<button class="back-to-top" id="backToTop" title="Torna su">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
 
 <script src="app.js"></script>
 </body>
