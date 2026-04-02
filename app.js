@@ -1,26 +1,52 @@
 // ========== MicrobitRadioV3 — App.js ==========
 
-// === INTRO: a tutto schermo, poi sparisce ===
+// === INTRO E LIQUID GLASS INIT ===
 window.addEventListener('DOMContentLoaded', () => {
+  // Apple Liquid Glass dynamic glow per tutte le card
+  document.querySelectorAll('.card, .mini, .ctrl, .mod, .gh-stat, .repo-card, .lang-card, .wiki-card, .sync-box, .arch').forEach(el => {
+    const g = document.createElement('div');
+    g.className = 'glass-glow';
+    el.appendChild(g);
+  });
+
   const intro = document.getElementById('introOverlay');
   if (!intro) return;
-  // After 2.8s, fade out with blur, then remove
+  // Esplosione animata dopo 2.3s
   setTimeout(() => {
-    intro.classList.add('done');
+    intro.classList.add('explode');
     setTimeout(() => {
       intro.remove();
       // Trigger scroll animations once intro is gone
       observeAnimations();
     }, 1000);
-  }, 2800);
+  }, 2300);
 });
 
-// === PARTICLES (background) ===
+// === PARTICLES (background) & MOUSE GLOW ===
 (function() {
   const c = document.getElementById('particlesCanvas');
   if (!c) return;
   const ctx = c.getContext('2d');
   let pts = [];
+  let mx = -1000, my = -1000;
+  const glow = document.getElementById('mouseGlow');
+  
+  window.addEventListener('mousemove', e => { 
+    mx = e.clientX; 
+    my = e.clientY; 
+    document.documentElement.style.setProperty('--cursor-x', mx + 'px');
+    document.documentElement.style.setProperty('--cursor-y', my + 'px');
+    if (glow) {
+      glow.style.left = mx + 'px';
+      glow.style.top = my + 'px';
+      glow.classList.add('active');
+    }
+  });
+  window.addEventListener('mouseout', () => { 
+    if(glow) glow.classList.remove('active');
+    mx = -1000; my = -1000; 
+  });
+
   const resize = () => { c.width = innerWidth; c.height = innerHeight; };
   resize();
   addEventListener('resize', resize);
@@ -35,6 +61,13 @@ window.addEventListener('DOMContentLoaded', () => {
       this.o = Math.random() * 0.12 + 0.02;
     }
     update() {
+      const dx = mx - this.x;
+      const dy = my - this.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 140) {
+        this.x -= dx * 0.015;
+        this.y -= dy * 0.015;
+      }
       this.x += this.vx;
       this.y += this.vy;
       if (this.x < 0 || this.x > c.width || this.y < 0 || this.y > c.height) this.reset();
@@ -54,11 +87,18 @@ window.addEventListener('DOMContentLoaded', () => {
       for (let j = i + 1; j < pts.length; j++) {
         const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
         const d = Math.sqrt(dx * dx + dy * dy);
-        if (d < 80) {
+        let distThreshold = 90;
+        
+        // Se vicino al mouse aumenta la distanza di trigger e aggiusta raggio
+        const mDist1 = Math.sqrt((pts[i].x - mx)**2 + (pts[i].y - my)**2);
+        const mDist2 = Math.sqrt((pts[j].x - mx)**2 + (pts[j].y - my)**2);
+        if(mDist1 < 140 || mDist2 < 140) distThreshold = 140;
+
+        if (d < distThreshold) {
           ctx.beginPath();
           ctx.moveTo(pts[i].x, pts[i].y);
           ctx.lineTo(pts[j].x, pts[j].y);
-          ctx.strokeStyle = `rgba(79,142,255,${0.025 * (1 - d / 80)})`;
+          ctx.strokeStyle = `rgba(79,142,255,${0.03 * (1 - d / distThreshold)})`;
           ctx.stroke();
         }
       }
@@ -161,30 +201,34 @@ function observeAnimations() {
   if (!el) return;
   const lines = [
     {t:'// Programma MicrobitRadioV3',c:'comment'},{t:''},{t:'enum RadioMessage {',c:'keyword'},
-    {t:'    HiUnknown = 26979,',c:'number'},{t:'    HiGeget = 2955,',c:'number'},
-    {t:'    OnlineSYNC = 7840,',c:'number'},{t:'    OnlineSYNCReciving = 27820,',c:'number'},
-    {t:'    BLOCK = 28732,',c:'number'},{t:'    HiZotap = 32430,',c:'number'},
-    {t:'    HiGagez = 35590,',c:'number'},{t:'    message1 = 49434',c:'number'},{t:'}'},{t:''},
-    {t:'// Inizializzazione',c:'comment'},{t:'radio.setGroup(137)',c:'function'},
+    {t:'    HiUnknown = 26979, HiGeget = 2955,',c:'number'},
+    {t:'    OnlineSYNC = 7840, OnlineSYNCReciving = 27820,',c:'number'},
+    {t:'    BLOCK = 28732, HiZotap = 32430,',c:'number'},
+    {t:'    HiGagez = 35590, message1 = 49434',c:'number'},{t:'}'},{t:''},
+    {t:'// Setup Base',c:'comment'},{t:'radio.setGroup(137)',c:'function'},
     {t:'radio.setTransmitPower(7)',c:'function'},{t:'music.setVolume(130)',c:'function'},
     {t:'turtle.setSpeed(30)',c:'function'},{t:''},
-    {t:'// Pulsante A',c:'comment'},{t:'input.onButtonPressed(Button.A, () => {',c:'function'},
-    {t:'    if (status == 0) {'},{t:'        if(control.deviceName() == "geget") radio.sendMessage(RadioMessage.HiGeget)',c:'function'},
-    {t:'        else radio.sendMessage(RadioMessage.HiUnknown)',c:'function'},{t:'    }'},{t:'})'},{t:''},
+    {t:'// Pulsante A (Saluto)',c:'comment'},{t:'input.onButtonPressed(Button.A, () => {',c:'function'},
+    {t:'    if (status == 0) {'},{t:'        status = 2',c:'number'},
+    {t:'        if(control.deviceName() == "geget") radio.sendMessage(RadioMessage.HiGeget)',c:'function'},
+    {t:'        else radio.sendMessage(RadioMessage.HiUnknown)',c:'function'},{t:'        ok()',c:'function'},{t:'    }'},{t:'})'},{t:''},
     {t:'// A+B — Scan della rete',c:'comment'},{t:'input.onButtonPressed(Button.AB, () => {',c:'function'},
-    {t:'    online = 0',c:'number'},{t:'    radio.sendMessage(RadioMessage.message1)',c:'function'},
-    {t:'    SYNC_did += 1',c:'number'},{t:'})'},{t:''},
-    {t:'// Pulsante B — HUD',c:'comment'},{t:'input.onButtonPressed(Button.B, () => {',c:'function'},
-    {t:'    turtle.setPosition(0, 0)',c:'function'},{t:'    turtle.pen(TurtlePenMode.Down)',c:'function'},
-    {t:'    turtle.forward(X_view)',c:'function'},{t:'})'},{t:''},
-    {t:'// Profili VIP',c:'comment'},{t:'function geget_ID() { /* pattern */ }',c:'function'},
-    {t:'function zotap_ID() { /* pattern */ }',c:'function'},
-    {t:'function gagez_ID() { /* pattern */ }',c:'function'},{t:''},
-    {t:'// Loop — Calcolo HUD',c:'comment'},{t:'basic.forever(() => {',c:'function'},
-    {t:'    if (online <= 5) X_view = online',c:'number'},
-    {t:'    else if (online <= 10) {',c:'number'},
-    {t:'        X_view = 5; Y_view = online - 5',c:'number'},
-    {t:'    }'},{t:'    // ... fino a 20 utenti',c:'comment'},{t:'})'},
+    {t:'    if (status == 0) {'},{t:'        online = 0; SYNCDID += 1',c:'number'},{t:'        radio.sendMessage(RadioMessage.OnlineSYNC)',c:'function'},
+    {t:'    }'},{t:'})'},{t:''},
+    {t:'// Risposta allo Scan e Arrivo Risposte',c:'comment'},
+    {t:'radio.onReceivedMessage(RadioMessage.OnlineSYNC, () => {',c:'function'},
+    {t:'    basic.pause(randint(5, 1700))',c:'function'},{t:'    radio.sendMessage(RadioMessage.OnlineSYNCReciving)',c:'function'},{t:'})'},
+    {t:'radio.onReceivedMessage(RadioMessage.OnlineSYNCReciving, () => {',c:'function'},
+    {t:'    if (SYNCDID > 0) online += 1',c:'number'},{t:'})'},{t:''},
+    {t:'// Ghost Mode (Segreto)',c:'comment'},{t:'input.onGesture(Gesture.ScreenUp, () => {',c:'function'},
+    {t:'    if (input.isGesture(Gesture.ScreenUp) && input.buttonIsPressed(Button.B)) {'},
+    {t:'        basic.showIcon(IconNames.Ghost)',c:'function'},{t:'        radio.sendMessage(RadioMessage.BLOCK)',c:'function'},{t:'    }'},{t:'})'},{t:''},
+    {t:'// Pulsante B — Disegno HUD',c:'comment'},{t:'input.onButtonPressed(Button.B, () => {',c:'function'},
+    {t:'    if (online > 0) {'},{t:'        turtle.forward(X_view)',c:'function'},{t:'        if (Y_view >= 0) turtle.forward(Y_view)',c:'function'},{t:'        // logica barre LED...',c:'comment'},{t:'    }'},{t:'})'},{t:''},
+    {t:'// Loop — Calcolo HUD variabili',c:'comment'},{t:'basic.forever(() => {',c:'function'},
+    {t:'    if (online <= 5) { X_view = online; Y_view = -1; }',c:'number'},
+    {t:'    else if (online <= 10) { X_view = 5; Y_view = online - 5; }',c:'number'},
+    {t:'    // ... scala proporzionalmente',c:'comment'},{t:'})'},
   ];
   el.innerHTML = lines.map(l => l.c ? `<span class="${l.c}">${esc(l.t)}</span>\n` : esc(l.t) + '\n').join('');
 })();
@@ -291,16 +335,22 @@ const LANG_COLORS = {
 
 async function fetchGithubData() {
   try {
-    const [repoRes, commitsRes, langsRes, userReposRes] = await Promise.all([
+    const [repoRes, commitsRes, langsRes, userReposRes, releaseRes] = await Promise.all([
       fetch(REPO_URL),
       fetch(REPO_URL + '/commits?per_page=10'),
       fetch(REPO_URL + '/languages'),
-      fetch(USER_URL + '/repos?sort=updated&per_page=8')
+      fetch(USER_URL + '/repos?sort=updated&per_page=8'),
+      fetch(REPO_URL + '/releases/latest').catch(() => null)
     ]);
     const repo = await repoRes.json();
     const commits = await commitsRes.json();
     const langs = await langsRes.json();
     const userRepos = await userReposRes.json();
+    const release = releaseRes ? await releaseRes.json().catch(() => null) : null;
+    if (release && release.tag_name) {
+      const hv = document.getElementById('hero-version');
+      if (hv) hv.textContent = release.tag_name;
+    }
 
     // Stat counters
     animateCounter('gh-stars', repo.stargazers_count ?? 0);

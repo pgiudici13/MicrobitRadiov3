@@ -28,55 +28,47 @@ html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
 body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden}
 
 /* ======================== INTRO ======================== */
-.intro-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;background:var(--bg);overflow:hidden;transition:opacity 1s cubic-bezier(.4,0,.2,1),filter .8s ease}
-.intro-overlay.done{opacity:0;filter:blur(30px) brightness(2);pointer-events:none}
+.intro-overlay {
+  position:fixed; inset:0; z-index:99999; display:flex; align-items:center; justify-content:center; flex-direction:column; background:var(--bg); overflow:hidden;
+  transition: opacity 1s cubic-bezier(0.8, 0, 0.2, 1), transform 1s cubic-bezier(0.8, 0, 0.2, 1), filter 1s ease;
+}
+.intro-overlay.explode {
+  opacity:0; transform:scale(1.5); filter:blur(40px) brightness(3); pointer-events:none;
+}
+.gemini-container {
+  position:relative; z-index:2; display:flex; flex-direction:column; align-items:center;
+}
+.gemini-star {
+  position:relative; width:120px; height:120px;
+  animation: geminiSpin 6s linear infinite;
+  display:flex; align-items:center; justify-content:center;
+}
+.g-star-svg {
+  width:100%; height:100%; filter:drop-shadow(0 0 20px rgba(139,92,246,0.6));
+}
+.g-path {
+  animation: geminiPulse 2s ease-in-out infinite alternate;
+}
+@keyframes geminiSpin { to { transform:rotate(360deg); } }
+@keyframes geminiPulse { 0% { transform:scale(0.85); transform-origin:center; } 100% { transform:scale(1.05); transform-origin:center; } }
 
-.intro-bg{position:absolute;inset:0}
-.intro-bg::before{content:'';position:absolute;top:50%;left:50%;width:800px;height:800px;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(79,142,255,0.08) 0%,transparent 70%);animation:introGlow 3s ease-in-out infinite alternate}
-@keyframes introGlow{from{transform:translate(-50%,-50%) scale(.8);opacity:.5}to{transform:translate(-50%,-50%) scale(1.2);opacity:1}}
+.gemini-sparkle { position:absolute; border-radius:50%; background:#fff; filter:blur(2px); animation:sparkleFloat 2s ease-in-out infinite alternate; }
+.gemini-sparkle.s1 { width:6px; height:6px; top:-20px; left:-20px; background:var(--accent); animation-delay:0s; }
+.gemini-sparkle.s2 { width:4px; height:4px; bottom:-10px; right:-30px; background:var(--rose); animation-delay:0.5s; }
+.gemini-sparkle.s3 { width:8px; height:8px; top:50%; right:-40px; background:var(--sky); animation-delay:1s; }
+@keyframes sparkleFloat { from { transform:translateY(0) scale(1); opacity:0.3; } to { transform:translateY(-15px) scale(1.5); opacity:1; } }
 
-.intro-ring{position:absolute;border-radius:50%;border:1px solid rgba(79,142,255,0.12);top:50%;left:50%;transform:translate(-50%,-50%)}
-.intro-ring:nth-child(1){width:120px;height:120px;animation:ringPulse 2s ease-in-out infinite}
-.intro-ring:nth-child(2){width:200px;height:200px;animation:ringPulse 2s ease-in-out .3s infinite}
-.intro-ring:nth-child(3){width:300px;height:300px;animation:ringPulse 2s ease-in-out .6s infinite}
-.intro-ring:nth-child(4){width:420px;height:420px;animation:ringPulse 2s ease-in-out .9s infinite}
-.intro-ring:nth-child(5){width:560px;height:560px;animation:ringPulse 2s ease-in-out 1.2s infinite}
+.intro-text-g {
+  position:absolute; bottom:20%; text-align:center;
+}
+.intro-m { font-size:0.65rem; font-weight:700; width:100%; text-transform:uppercase; letter-spacing:5px; color:var(--text3); animation: fadeUpIn 1s ease 0.5s forwards; opacity:0; margin-bottom: 0.3rem }
+.intro-t { font-size:1.6rem; font-weight:900; background:linear-gradient(90deg, var(--sky), var(--violet), var(--rose)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; margin-top:0.2rem; animation: fadeUpIn 1s ease 0.7s forwards; opacity:0; }
+@keyframes fadeUpIn { from { opacity:0; transform:translateY(20px); filter:blur(10px); } to { opacity:1; transform:translateY(0); filter:blur(0); } }
 
-@keyframes ringPulse{0%,100%{opacity:.15;transform:translate(-50%,-50%) scale(1)}50%{opacity:.4;transform:translate(-50%,-50%) scale(1.05)}}
-
-.intro-center{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
-.intro-glass-orb{width:100px;height:100px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(122,171,255,0.2),rgba(79,142,255,0.05) 60%,transparent);border:1px solid rgba(79,142,255,0.15);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;position:relative;animation:orbFloat 3s ease-in-out infinite;box-shadow:0 0 60px rgba(79,142,255,0.1),inset 0 0 30px rgba(79,142,255,0.03)}
-.intro-glass-orb::before{content:'';position:absolute;inset:-2px;border-radius:50%;background:conic-gradient(from 0deg,transparent 0%,rgba(79,142,255,0.3) 25%,transparent 50%,rgba(99,102,241,0.2) 75%,transparent 100%);animation:orbSpin 4s linear infinite;opacity:.6}
-.intro-glass-orb::after{content:'';position:absolute;top:12%;left:20%;width:25px;height:12px;border-radius:50%;background:rgba(255,255,255,0.08);transform:rotate(-30deg);filter:blur(4px)}
-@keyframes orbFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-@keyframes orbSpin{to{transform:rotate(360deg)}}
-.intro-logo-svg{position:relative;z-index:1;opacity:.9}
-
-.intro-scanline{position:absolute;width:350px;height:1px;background:linear-gradient(90deg,transparent,rgba(79,142,255,0.4),transparent);top:50%;left:50%;transform:translate(-50%,-50%);animation:scanMove 2s ease-in-out infinite}
-@keyframes scanMove{0%{transform:translate(-50%,calc(-50% - 60px));opacity:0}50%{opacity:1}100%{transform:translate(-50%,calc(-50% + 60px));opacity:0}}
-
-.intro-text{margin-top:2.5rem;text-align:center;z-index:2}
-.intro-label{font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:4px;color:var(--text3);opacity:0;animation:introFadeIn .6s ease .3s forwards}
-.intro-title{font-size:1.6rem;font-weight:800;letter-spacing:1px;color:var(--accent);margin-top:.3rem;opacity:0;animation:introFadeIn .6s ease .6s forwards}
-@keyframes introFadeIn{from{opacity:0;transform:translateY(12px);filter:blur(8px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
-
-.intro-progress{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);z-index:2}
-.intro-progress-bar{width:160px;height:2px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden}
-.intro-progress-fill{width:0%;height:100%;background:linear-gradient(90deg,var(--accent),var(--indigo));border-radius:2px;animation:introProgress 2.5s ease-out forwards}
-@keyframes introProgress{to{width:100%}}
-.intro-progress-text{font-size:.58rem;color:var(--text3);text-align:center;margin-top:.4rem;letter-spacing:2px;text-transform:uppercase;font-weight:500}
-
-/* intro particles */
-.intro-particle{position:absolute;width:2px;height:2px;background:var(--accent);border-radius:50%;opacity:0}
-.intro-particle:nth-child(1){top:20%;left:15%;animation:particleDrift 4s ease-in-out 0s infinite}
-.intro-particle:nth-child(2){top:30%;right:20%;animation:particleDrift 5s ease-in-out .5s infinite}
-.intro-particle:nth-child(3){bottom:25%;left:25%;animation:particleDrift 3.5s ease-in-out 1s infinite}
-.intro-particle:nth-child(4){top:40%;right:30%;animation:particleDrift 4.5s ease-in-out .2s infinite}
-.intro-particle:nth-child(5){bottom:35%;right:15%;animation:particleDrift 3s ease-in-out .8s infinite}
-.intro-particle:nth-child(6){top:15%;left:40%;animation:particleDrift 5s ease-in-out .4s infinite}
-.intro-particle:nth-child(7){bottom:20%;left:50%;animation:particleDrift 4s ease-in-out 1.2s infinite}
-.intro-particle:nth-child(8){top:60%;right:40%;animation:particleDrift 3.5s ease-in-out .6s infinite}
-@keyframes particleDrift{0%{opacity:0;transform:translateY(0) scale(1)}25%{opacity:.6}50%{transform:translateY(-30px) scale(1.5)}75%{opacity:.3}100%{opacity:0;transform:translateY(-60px) scale(.5)}}
+.intro-bg-glow {
+  position:absolute; top:50%; left:50%; width:500px; height:500px; background:radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 60%); transform:translate(-50%,-50%); animation: bgGlowPulse 4s ease-in-out infinite alternate;
+}
+@keyframes bgGlowPulse { from { transform:translate(-50%,-50%) scale(0.8); opacity:0.5; } to { transform:translate(-50%,-50%) scale(1.2); opacity:1; } }
 
 /* ======================== BACKGROUND ======================== */
 .bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none}
@@ -87,6 +79,13 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .bg-orb.o3{width:350px;height:350px;background:var(--violet);top:50%;left:30%;animation-delay:-16s}
 @keyframes orbDrift{0%,100%{transform:translate(0,0)}33%{transform:translate(50px,-40px)}66%{transform:translate(-30px,35px)}}
 #particlesCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+.mouse-glow{position:fixed;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle, rgba(79,142,255,0.08) 0%, transparent 60%);top:0;left:0;transform:translate(-50%,-50%);pointer-events:none;z-index:0;transition:opacity 0.4s;opacity:0;}
+.mouse-glow.active{opacity:1;}
+.glass-glow {
+  position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 5;
+  background: radial-gradient(400px circle at var(--cursor-x, -500px) var(--cursor-y, -500px), rgba(255,255,255,0.06), transparent 40%);
+  background-attachment: fixed; transition: opacity 0.3s; mix-blend-mode: overlay;
+}
 
 /* ======================== GLASS CARD ======================== */
 .glass{background:var(--surface);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--border);border-radius:var(--r);position:relative;overflow:hidden}

@@ -12,40 +12,33 @@
 
 <!-- ====== FULLSCREEN INTRO ====== -->
 <div class="intro-overlay" id="introOverlay">
-  <div class="intro-bg">
-    <div class="intro-ring"></div>
-    <div class="intro-ring"></div>
-    <div class="intro-ring"></div>
-    <div class="intro-ring"></div>
-    <div class="intro-ring"></div>
-    <div class="intro-particle"></div>
-    <div class="intro-particle"></div>
-    <div class="intro-particle"></div>
-    <div class="intro-particle"></div>
-    <div class="intro-particle"></div>
-    <div class="intro-particle"></div>
-    <div class="intro-particle"></div>
-    <div class="intro-particle"></div>
-  </div>
-  <div class="intro-center">
-    <div class="intro-glass-orb">
-      <svg class="intro-logo-svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#4f8eff" stroke-width="1.8"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>
+  <div class="intro-bg-glow"></div>
+  <div class="gemini-container">
+    <div class="gemini-sparkle s1"></div><div class="gemini-sparkle s2"></div><div class="gemini-sparkle s3"></div>
+    <div class="gemini-star">
+      <svg viewBox="0 0 100 100" width="120" height="120" class="g-star-svg">
+        <path class="g-path" d="M50 0 C50 40, 60 50, 100 50 C60 50, 50 60, 50 100 C50 60, 40 50, 0 50 C40 50, 50 40, 50 0 Z" fill="url(#gGradient)"/>
+        <defs>
+          <linearGradient id="gGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#38bdf8"/>
+            <stop offset="33%" stop-color="#4f8eff"/>
+            <stop offset="66%" stop-color="#8b5cf6"/>
+            <stop offset="100%" stop-color="#fb7185"/>
+          </linearGradient>
+        </defs>
+      </svg>
     </div>
-    <div class="intro-scanline"></div>
   </div>
-  <div class="intro-text">
-    <p class="intro-label">Connessione alla rete</p>
-    <p class="intro-title">MicrobitRadioV3</p>
-  </div>
-  <div class="intro-progress">
-    <div class="intro-progress-bar"><div class="intro-progress-fill"></div></div>
-    <p class="intro-progress-text">Inizializzazione</p>
+  <div class="intro-text-g">
+    <p class="intro-m">Sistema Inizializzato</p>
+    <p class="intro-t">MicrobitRadioV3</p>
   </div>
 </div>
 
 <!-- ====== BACKGROUND ====== -->
 <canvas id="particlesCanvas"></canvas>
 <div class="bg-layer bg-grid"></div>
+<div class="bg-layer"><div class="mouse-glow" id="mouseGlow"></div></div>
 <div class="bg-layer"><div class="bg-orb o1"></div><div class="bg-orb o2"></div><div class="bg-orb o3"></div></div>
 
 <!-- ====== NAVBAR ====== -->
@@ -73,7 +66,7 @@
 <main class="page active" id="page-home"><div class="page-wrap">
   <section class="hero">
     <div class="hero-inner">
-      <div class="hero-badge"><div class="dot"></div> Versione 3.0 — Stabile</div>
+      <div class="hero-badge"><div class="dot"></div> Versione <span id="hero-version" style="font-family:'JetBrains Mono', monospace;margin:0 4px;">...</span> — Stabile</div>
       <h1><span class="accent">MicrobitRadioV3</span><br>Radio Sync Protocol</h1>
       <p class="hero-desc">Un protocollo che permette a più micro:bit di comunicare tra loro via radio, contare quanti dispositivi sono online e riconoscere chi si collega alla rete.</p>
       <div class="hero-btns">
@@ -203,11 +196,11 @@
       <div class="code-split sa">
         <div class="code-info"><h2>Struttura del programma</h2><p style="color:var(--text2);margin-top:.5rem">Il codice è organizzato in blocchi funzionali: enum per i messaggi, handler per i pulsanti, funzioni VIP e loop HUD.</p>
           <div class="timeline" style="margin-top:1rem">
-            <div class="tl-item"><div class="tl-dot"></div><span class="tl-tag">Enum</span><h4>Messaggi Radio</h4><p>Ogni messaggio ha un ID numerico univoco.</p></div>
-            <div class="tl-item"><div class="tl-dot"></div><span class="tl-tag">Setup</span><h4>Configurazione</h4><p>Canale 137, potenza 7, volume e animazione di avvio.</p></div>
-            <div class="tl-item"><div class="tl-dot"></div><span class="tl-tag">Input</span><h4>Gestione pulsanti</h4><p>Handler per A, B e A+B con azioni radio.</p></div>
-            <div class="tl-item"><div class="tl-dot"></div><span class="tl-tag">VIP</span><h4>Identificazione</h4><p>Funzioni per disegnare i simboli dei profili.</p></div>
-            <div class="tl-item"><div class="tl-dot"></div><span class="tl-tag">Loop</span><h4>Calcolo HUD</h4><p>Loop forever per il conteggio LED a barre.</p></div>
+            <div class="tl-item"><div class="tl-dot"></div><span class="tl-tag">Setup</span><h4>Inizializzazione</h4><p>Canale 137, potenza massima 7 e pattern d'avvio a diamante.</p></div>
+            <div class="tl-item"><div class="tl-dot"></div><span class="tl-tag">Invio</span><h4>Comandi Manuali</h4><p>A (saluto), B (mostra HUD) e A+B (scansione ID broadcast).</p></div>
+            <div class="tl-item"><div class="tl-dot"></div><span class="tl-tag">Ricezione</span><h4>Eventi Radio</h4><p>Gestione dell'arrivo segnali riconosciuti e messaggi stringa.</p></div>
+            <div class="tl-item"><div class="tl-dot"></div><span class="tl-tag">Segreto</span><h4>Ghost Mode</h4><p>Combinazione `ScreenUp` + bottone `B` per blocco (BLOCK).</p></div>
+            <div class="tl-item"><div class="tl-dot"></div><span class="tl-tag">Loop</span><h4>Calcolo HUD</h4><p>Assegnazione dinamica LED X/Y fino a 20 dispositivi.</p></div>
           </div>
         </div>
         <div class="code-block"><div class="code-head"><span class="code-d"></span><span class="code-d"></span><span class="code-d"></span><span class="code-fname">main.ts</span></div><pre class="code-body" id="codeContent"></pre></div>
