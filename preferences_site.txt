@@ -1,48 +1,26 @@
-=========================================================
-MicrobitRadioV3 - Sito Ufficiale: Preferenze e Design
-=========================================================
-Data Ultimo Aggiornamento: 02 Aprile 2026
-Autore: pgiudici13
-Sviluppato da: Antigravity AI (Coding Assistant)
+# MicrobitRadioV3 — Project Preferences & Source of Truth
+# Last Updated: 2026-04-02 (Aura v4 Cinematic)
 
----------------------------------------------------------
-1. FILOSOFIA DI DESIGN: "DARK GEMINI"
----------------------------------------------------------
-- Palette: Sfondo ultra-deep blue (#02040c) per massimizzare il contrasto.
-- Estetica: Liquid Glass 2.0. Il "vetro" deve essere percepito tramite i 1.2px
-  di bordo che si illuminano al passaggio del mouse (Blade of Light).
-- Contenuto: Nessun "bollo" o bagliore interno ai blocchi per mantenere
-  la massima leggibilità e professionalità.
+## 1. Visual Identity (Liquid Glass 2.0)
+- **Palette**: Dark Gemini (#02040c).
+- **Logo Area**: Rounded "Capsule" design.
+- **Intro**: Gemini Star with a "Dark Gemini Explosion".
+- **Versioning**: Fetched live from GitHub Release API.
 
----------------------------------------------------------
-2. ESPERIENZA INTRODUTTIVA
----------------------------------------------------------
-- Tema: Neutro e cinetico. Stella a 4 punte (Gemini Style) con anelli
-  orbitali trasparenti.
-- Animazione: Esplosione scura con onde d'urto (shockwaves) blu/viola durante
-  la transizione verso la home.
-- Navbar: Scompare durante l'intro per non creare artefatti visivi.
+## 2. Interaction & UX Standards
+- **Magnetic Mouse**: 
+  - **High Response LERP (0.36)** for cursor following.
+  - **Sequential Capture**: Only ONE element can be "captured" at a time to prevent visual jitter in dense areas.
+  - **Snap-In Animation**: On hover, elements have a **250ms Transition (Cubic-Bezier)** to smoothly move into the mouse position.
+  - **Active-Follow Mode**: After the 250ms snap-in, the element switches to **0s Transition** for zero-lag following.
+  - **Cursor Implosion**: When captured, the custom cursor shrinks (`scale(0.1)`) and fades (`opacity: 0`) rather than vanishing instantly.
+- **Background Physics**:
+  - Interactive lattice grid with web-line mouse connections.
+- **Zero-Scroll Start**:
+  - Forced `window.scrollTo(0,0)` on load and post-intro.
 
----------------------------------------------------------
-3. NAVIGAZIONE E LAYOUT
----------------------------------------------------------
-- Centratura: Navbar fissa con left:50% e translateX(-50%).
-- Progress Bar: Inset (calc(100% - 5rem)), visibilità solo durante lo scroll,
-  animata con scaleX per fluidità estrema.
-- Back to Top: Pulsante Glass flottante che appare dopo 600px di scroll.
-- Background: Reticolo interattivo canvas con connessioni "elettriche"
-  che reagiscono alla vicinanza del cursore.
+## 3. Architecture Visualization
+- **Focus Rule**: Target internal elements for magnetic effects in complex diagrams.
 
----------------------------------------------------------
-4. ARCHITETTURA DI RETE (Logica Code)
----------------------------------------------------------
-- Canale Radio: 137 universale.
-- Protocollo: Sincronizzazione ad-hoc (Sync -> Jitter -> Ack).
-- HUD: Rendering 5x5 LED tramite libreria Turtle, segmentato per righe (0-20 utenti).
-
----------------------------------------------------------
-Punti Chiave Future-Proof:
-- Non aggiungere mai colori arcobaleno (Rainbow) se non esplicitamente richiesto.
-- Mantenere le riflessioni esclusivamente sui bordi delle card.
-- Verificare sempre la centratura della navbar dopo ogni modifica all'animazione slideDown.
-=========================================================
+## 4. Maintenance Notes
+- CSS `transition: transform 0.25s` is the default for magnetic elements to allow the snap-in; JavaScript adds `.active-follow` to bypass this for realtime motion.

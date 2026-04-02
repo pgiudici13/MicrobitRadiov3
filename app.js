@@ -1,41 +1,83 @@
 // ========== MicrobitRadioV3 — App.js ==========
 
-// === INTRO E LIQUID GLASS INIT ===
-// === INTRO E LIQUID GLASS INIT ===
+// State
+let mouse = { x: 0, y: 0, lastX: 0, lastY: 0 };
+let cursor = { x: 0, y: 0 };
+const LERP = 0.36; // Snappier response
+
 window.addEventListener('DOMContentLoaded', () => {
   const intro = document.getElementById('introOverlay');
+  const cursorEl = document.getElementById('cursor');
   
-  // Apple Liquid Glass 2.0 (Local + Border logic)
-  const glassSelectors = '.card, .mini, .ctrl, .mod, .gh-stat, .repo-card, .lang-card, .wiki-card, .sync-box, .arch, .btn-p, .btn-s';
-  document.querySelectorAll(glassSelectors).forEach(el => {
+  // Ensure we start at the top
+  window.scrollTo(0, 0);
+  document.body.style.overflow = 'hidden';
+
+  // --- CUSTOM CURSOR ---
+  window.addEventListener('mousemove', e => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+
+  function updateCursor() {
+    cursor.x += (mouse.x - cursor.x) * LERP;
+    cursor.y += (mouse.y - cursor.y) * LERP;
+    if (cursorEl) {
+      cursorEl.style.left = `${cursor.x}px`;
+      cursorEl.style.top = `${cursor.y}px`;
+    }
+    requestAnimationFrame(updateCursor);
+  }
+  updateCursor();
+
+  // --- MAGNETIC & LIQUID GLASS 2.0 ---
+  let activeMagneticElement = null;
+  let snapTimeout = null;
+  const interactiveSelectors = 'a, button, .mini, .ctrl, .mod, .gh-stat, .repo-card, .wiki-card, .nav-logo, .pchip, .card, .sync-step, .lang-card, .arch';
+  
+  document.querySelectorAll(interactiveSelectors).forEach(el => {
     el.addEventListener('mousemove', e => {
-      const rect = el.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      el.style.setProperty('--x', `${x}px`);
-      el.style.setProperty('--y', `${y}px`);
+      // Only one element at a time
+      if (activeMagneticElement && activeMagneticElement !== el) return;
       
-      // Magnetic effect for icons/buttons
-      if (el.classList.contains('btn-p') || el.classList.contains('icon') || el.classList.contains('repo-tag')) {
-        const mx = (x - rect.width / 2) * 0.15;
-        const my = (y - rect.height / 2) * 0.15;
-        el.style.transform = `translate(${mx}px, ${my}px) translateY(-5px) scale(1.05)`;
-      }
+      const rect = el.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      
+      // Professional-level magnetic pull (Ultra Subtle)
+      const pullX = x * 0.1;
+      const pullY = y * 0.1;
+      el.style.transform = `translate(${pullX}px, ${pullY}px) scale(1.005)`;
+      
+      if(cursorEl) cursorEl.classList.add('magnetic-state');
+      el.classList.add('magnetic-focus');
+
+      // Liquid Glass update
+      el.style.setProperty('--x', `${e.clientX - rect.left}px`);
+      el.style.setProperty('--y', `${e.clientY - rect.top}px`);
+    });
+
+    el.addEventListener('mouseenter', () => {
+      if(cursorEl) cursorEl.classList.add('hover');
+      activeMagneticElement = el;
+      // Start snap-in animation (CSS handled), then switch to 0s lag
+      clearTimeout(snapTimeout);
+      snapTimeout = setTimeout(() => {
+        if (activeMagneticElement === el) el.classList.add('active-follow');
+      }, 250); // Match CSS transition duration
     });
 
     el.addEventListener('mouseleave', () => {
-      if (el.classList.contains('btn-p') || el.classList.contains('icon') || el.classList.contains('nav-logo-icon')) {
-        el.style.transform = '';
-      }
+      if(cursorEl) cursorEl.classList.remove('hover');
+      el.style.transform = '';
+      el.classList.remove('active-follow');
+      el.classList.remove('magnetic-focus');
+      if(cursorEl) cursorEl.classList.remove('magnetic-state');
+      
+      clearTimeout(snapTimeout);
+      activeMagneticElement = null;
     });
   });
-
-  // Logo magnetic specifically
-  const logoIcon = document.querySelector('.nav-logo-icon');
-  if(logoIcon) {
-    logoIcon.classList.add('icon'); // to trigger magnetic
-    logoIcon.parentNode.style.perspective = '1000px';
-  }
 
   // Intro particles (sparkles around the star)
   const ip = document.getElementById('introParticles');
@@ -54,38 +96,28 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  if (!intro) return;
-  // Esplosione Dark Gemini dopo 3s
-  setTimeout(() => {
-    intro.classList.add('explode');
+  if (intro) {
     setTimeout(() => {
-      intro.remove();
-      document.body.classList.remove('body-intro');
-      observeAnimations();
-    }, 1800);
-  }, 3000);
+      intro.classList.add('explode');
+      setTimeout(() => {
+        intro.remove();
+        document.body.classList.remove('body-intro');
+        document.body.style.overflow = '';
+        window.scrollTo(0, 0); // Force top on removal
+        observeAnimations();
+      }, 1800);
+    }, 3000);
+  }
 });
 
-// === PARTICLES (Electric Lattice Grid) & MOUSE GLOW ===
+// === PARTICLES (Interactive Lattice) ===
 (function() {
   const c = document.getElementById('particlesCanvas');
   if (!c) return;
   const ctx = c.getContext('2d');
   let pts = [];
-  let mx = -1000, my = -1000;
   const glow = document.getElementById('mouseGlow');
   
-  window.addEventListener('mousemove', e => { 
-    mx = e.clientX; my = e.clientY; 
-    document.documentElement.style.setProperty('--cursor-x', mx + 'px');
-    document.documentElement.style.setProperty('--cursor-y', my + 'px');
-    if (glow) { glow.style.left = mx + 'px'; glow.style.top = my + 'px'; glow.classList.add('active'); }
-  });
-  window.addEventListener('mouseout', () => { 
-    if(glow) glow.classList.remove('active');
-    mx = -1000; my = -1000; 
-  });
-
   const resize = () => { c.width = innerWidth; c.height = innerHeight; };
   resize(); addEventListener('resize', resize);
 
@@ -94,76 +126,64 @@ window.addEventListener('DOMContentLoaded', () => {
     reset() {
       this.x = Math.random() * c.width;
       this.y = Math.random() * c.height;
-      this.vx = (Math.random() - 0.5) * 0.12;
-      this.vy = (Math.random() - 0.5) * 0.12;
-      this.s = Math.random() * 2 + 0.5;
-      this.o = Math.random() * 0.2 + 0.1;
+      this.vx = (Math.random() - 0.5) * 0.2;
+      this.vy = (Math.random() - 0.5) * 0.2;
+      this.s = Math.random() * 2.5 + 0.5;
+      this.o = Math.random() * 0.3 + 0.1;
       this.color = Math.random() > 0.5 ? '79, 142, 255' : '139, 92, 246';
     }
     update() {
-      const dx = mx - this.x, dy = my - this.y;
+      const dx = mouse.x - this.x, dy = mouse.y - this.y;
       const d = Math.sqrt(dx*dx + dy*dy);
-      if (d < 200) {
-        this.x -= dx * 0.005;
-        this.y -= dy * 0.005;
+      // Mouse interaction: soft attraction
+      if (d < 300) {
+        this.vx += dx * 0.00002;
+        this.vy += dy * 0.00002;
       }
       this.x += this.vx; this.y += this.vy;
       if (this.x < 0 || this.x > c.width || this.y < 0 || this.y > c.height) this.reset();
     }
     draw() {
       ctx.beginPath(); ctx.arc(this.x, this.y, this.s, 0, Math.PI*2);
-      ctx.fillStyle = `rgba(${this.color}, ${this.o * 1.5})`; ctx.fill();
+      ctx.fillStyle = `rgba(${this.color}, ${this.o})`; ctx.fill();
     }
   }
 
-  const gridSpacing = 65;
+  const gridSpacing = 60;
   function drawGrid() {
     ctx.lineWidth = 1;
     for (let x = 0; x < c.width; x += gridSpacing) {
       for (let y = 0; y < c.height; y += gridSpacing) {
-        const dx = mx - x, dy = my - y;
+        const dx = mouse.x - x, dy = mouse.y - y;
         const d = Math.sqrt(dx*dx + dy*dy);
-        const shift = d < 220 ? (1 - d/220) * 12 : 0;
+        const shift = d < 250 ? (1 - d/250) * 15 : 0;
         const sx = x + (dx/d || 0) * shift;
         const sy = y + (dy/d || 0) * shift;
         
         ctx.beginPath();
-        ctx.strokeStyle = d < 200 ? `rgba(79, 142, 255, ${0.25 * (1 - d/200)})` : 'rgba(79, 142, 255, 0.08)';
+        const alpha = d < 220 ? (0.3 * (1 - d/220)) : 0.08;
+        ctx.strokeStyle = `rgba(79, 142, 255, ${alpha})`;
         ctx.moveTo(sx - 2, sy); ctx.lineTo(sx + 2, sy);
         ctx.moveTo(sx, sy - 2); ctx.lineTo(sx, sy + 2);
         ctx.stroke();
 
-        // Electric connections
-        if (d < 140) {
+        // Connect particles near mouse
+        if (d < 160) {
           ctx.beginPath();
-          ctx.strokeStyle = `rgba(139, 92, 246, ${0.2 * (1 - d/140)})`;
+          ctx.strokeStyle = `rgba(139, 92, 246, ${0.15 * (1 - d/160)})`;
           ctx.moveTo(sx, sy);
-          ctx.lineTo(mx, my);
+          ctx.lineTo(mouse.x, mouse.y);
           ctx.stroke();
         }
       }
     }
   }
 
-  for (let i = 0; i < 60; i++) pts.push(new P());
+  for (let i = 0; i < 70; i++) pts.push(new P());
   (function loop() {
     ctx.clearRect(0, 0, c.width, c.height);
     drawGrid();
     pts.forEach(p => { p.update(); p.draw(); });
-    for (let i = 0; i < pts.length; i++) {
-      for (let j = i + 1; j < pts.length; j++) {
-        const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
-        const d = Math.sqrt(dx*dx + dy*dy);
-        let thresh = 110;
-        const m1 = Math.sqrt((pts[i].x-mx)**2 + (pts[i].y-my)**2);
-        if (m1 < 180) thresh = 180;
-        if (d < thresh) {
-          ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y);
-          ctx.strokeStyle = `rgba(79, 142, 255, ${0.12 * (1 - d/thresh)})`;
-          ctx.stroke();
-        }
-      }
-    }
     requestAnimationFrame(loop);
   })();
 })();
@@ -439,8 +459,19 @@ async function fetchGithubData() {
     const release = releaseRes ? await releaseRes.json().catch(() => null) : null;
     if (release && release.tag_name) {
       const hv = document.getElementById('hero-version');
+      const fv = document.getElementById('footer-version');
       if (hv) hv.textContent = release.tag_name;
+      if (fv) fv.textContent = release.tag_name;
     }
+
+    // Repository Details
+    updateEl('gh-fullname', repo.full_name);
+    updateEl('gh-desc', repo.description);
+    updateEl('gh-license', repo.license ? repo.license.spdx_id : 'No License');
+    updateEl('gh-branch', repo.default_branch);
+    updateEl('gh-visibility', repo.visibility ? repo.visibility.toUpperCase() : 'PUBLIC');
+    const avatar = document.getElementById('gh-avatar');
+    if (avatar && repo.owner) avatar.src = repo.owner.avatar_url;
 
     // Stat counters
     animateCounter('gh-stars', repo.stargazers_count ?? 0);
