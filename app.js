@@ -345,7 +345,6 @@ function observeAnimations() {
   ];
   el.innerHTML = lines.map(l => l.c ? `<span class="${l.c}">${esc(l.t)}</span>\n` : esc(l.t) + '\n').join('');
 })();
-function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
 // === LED SIMULATOR ===
 let simAnimating = false, simAnimInterval = null;
@@ -438,7 +437,7 @@ function updateExportCode() {
 }
 
 // === GITHUB API ===
-const REPO_URL = 'https://api.github.com/repos/pgiudici13/MicrobitRadioV3';
+const REPO_URL = 'https://api.github.com/repos/pgiudici13/MicrobitRadiov3';
 const USER_URL = 'https://api.github.com/users/pgiudici13';
 const LANG_COLORS = {
   TypeScript:'#3178c6', JavaScript:'#f1e05a', HTML:'#e34c26',
@@ -446,16 +445,16 @@ const LANG_COLORS = {
   Makefile:'#427819', Shell:'#89e051'
 };
 
-const updateEl = (id, text) => {
+function updateEl(id, text) {
   const el = document.getElementById(id);
   if (el) el.textContent = text || '—';
-};
+}
 
-const esc = (s) => {
+function esc(s) {
   if (!s) return '';
   const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
   return String(s).replace(/[&<> "']/g, m => map[m]);
-};
+}
 
 async function fetchGithubData() {
   try {
