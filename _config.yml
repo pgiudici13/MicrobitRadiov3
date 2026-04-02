@@ -16,6 +16,7 @@ exclude:
   - pxt.json
   - Makefile
   - Gemfile
+  - Gemfile.lock
   - _history
   - tsconfig.json
   - .vscode
