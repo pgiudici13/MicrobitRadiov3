@@ -151,7 +151,7 @@ Per far funzionare il codice (`ptx.json`) ci appoggiamo a librerie esterne molto
 > [!WARNING]
 > È super importante fare una piccola **modifica manuale nel codice** prima di cominciare ad usarlo, altrimenti funzionerà a metà.
 
-Per evitare che troppi dispositivi inesperti intasino le linee, devi prima aprire il codice del progetto e inserire **il tuo nome identificativo**. Finché la variabile col nome non è compilata e convalidata nel codice, il tuo micro:bit saprà solo "ascoltare" (cioè riceverà tutti i messaggi) ma non sarà autorizzato a "parlare" ed inviare risposte al resto della classe!
+Per evitare che troppi dispositivi inesperti intasino le linee, devi prima aprire il codice del progetto e inserire **il tuo nome identificativo**. Finché la variabile col nome non è compilata e convalidata nel codice, il tuo micro:bit saprà solo "ascoltare" (cioè riceverà tutti i messaggi) ma non sarà autorizzato a "parlare" ed inviare risposte, oppure crea una discussione dove dici il nome del microbit e te lo aggiungiamo alla lista
 
 ---
 
