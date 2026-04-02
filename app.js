@@ -108,6 +108,9 @@ window.addEventListener('DOMContentLoaded', () => {
       }, 1800);
     }, 3000);
   }
+
+  // Trigger Live Data
+  fetchGithubData();
 });
 
 // === PARTICLES (Interactive Lattice) ===
@@ -435,7 +438,7 @@ function updateExportCode() {
 }
 
 // === GITHUB API ===
-const REPO_URL = 'https://api.github.com/repos/pgiudici13/MicrobitRadiov3';
+const REPO_URL = 'https://api.github.com/repos/pgiudici13/MicrobitRadioV3';
 const USER_URL = 'https://api.github.com/users/pgiudici13';
 const LANG_COLORS = {
   TypeScript:'#3178c6', JavaScript:'#f1e05a', HTML:'#e34c26',
@@ -452,16 +455,22 @@ async function fetchGithubData() {
       fetch(USER_URL + '/repos?sort=updated&per_page=8'),
       fetch(REPO_URL + '/releases/latest').catch(() => null)
     ]);
-    const repo = await repoRes.json();
-    const commits = await commitsRes.json();
-    const langs = await langsRes.json();
-    const userRepos = await userReposRes.json();
-    const release = releaseRes ? await releaseRes.json().catch(() => null) : null;
+    const repo = repoRes.ok ? await repoRes.json() : null;
+    const commits = commitsRes.ok ? await commitsRes.json() : [];
+    const langs = langsRes.ok ? await langsRes.json() : {};
+    const userRepos = userReposRes.ok ? await userReposRes.json() : [];
+    const release = (releaseRes && releaseRes.ok) ? await releaseRes.json() : null;
+
     if (release && release.tag_name) {
       const hv = document.getElementById('hero-version');
       const fv = document.getElementById('footer-version');
       if (hv) hv.textContent = release.tag_name;
       if (fv) fv.textContent = release.tag_name;
+    }
+
+    if (!repo) {
+      console.warn('GitHub API: Repository not found or Rate Limited.');
+      return;
     }
 
     // Repository Details
@@ -561,4 +570,3 @@ function animateCounter(id, target) {
   }, 35);
 }
 
-fetchGithubData();

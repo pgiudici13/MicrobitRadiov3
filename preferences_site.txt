@@ -1,5 +1,5 @@
 # MicrobitRadioV3 — Project Preferences & Source of Truth
-# Last Updated: 2026-04-02 (Aura v4 Cinematic)
+# Last Updated: 2026-04-02 (API Guard Update)
 
 ## 1. Visual Identity (Liquid Glass 2.0)
 - **Palette**: Dark Gemini (#02040c).
@@ -10,17 +10,18 @@
 ## 2. Interaction & UX Standards
 - **Magnetic Mouse**: 
   - **High Response LERP (0.36)** for cursor following.
-  - **Sequential Capture**: Only ONE element can be "captured" at a time to prevent visual jitter in dense areas.
-  - **Snap-In Animation**: On hover, elements have a **250ms Transition (Cubic-Bezier)** to smoothly move into the mouse position.
-  - **Active-Follow Mode**: After the 250ms snap-in, the element switches to **0s Transition** for zero-lag following.
-  - **Cursor Implosion**: When captured, the custom cursor shrinks (`scale(0.1)`) and fades (`opacity: 0`) rather than vanishing instantly.
+  - **Snap-In Animation**: 250ms smooth transition before zero-lag follow.
+  - **Cursor Implosion**: scale(0.1) and opacity(0) on capture.
 - **Background Physics**:
   - Interactive lattice grid with web-line mouse connections.
-- **Zero-Scroll Start**:
-  - Forced `window.scrollTo(0,0)` on load and post-intro.
 
-## 3. Architecture Visualization
-- **Focus Rule**: Target internal elements for magnetic effects in complex diagrams.
+## 3. GitHub API Infrastructure
+- **Endpoint**: `https://api.github.com/repos/pgiudici13/MicrobitRadioV3`.
+- **Initialization**: `fetchGithubData()` must be called inside the `DOMContentLoaded` listener.
+- **Robustness**: 
+  - Individual `res.ok` checks per fetch are mandatory.
+  - Releases: If 404 (no releases), fallback to a static "v0.1.0" or "Live" tag.
+  - Repo check: If the root repo fetch fails (e.g. rate limit), stay on placeholders.
 
 ## 4. Maintenance Notes
-- CSS `transition: transform 0.25s` is the default for magnetic elements to allow the snap-in; JavaScript adds `.active-follow` to bypass this for realtime motion.
+- CSS `transition: transform 0.25s` is the default for magnetic elements; JavaScript adds `.active-follow` to bypass this for realtime motion.
