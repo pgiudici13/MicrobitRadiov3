@@ -13,6 +13,7 @@
 
   <p>
     <a href="https://github.com/pgiudici13"><img src="https://img.shields.io/badge/Autore-pgiudici13-blue?style=for-the-badge&logo=github"></a>
+    <a href="https://github.com/pgiudici13/MicrobitRadiov3/releases"><img src="https://img.shields.io/github/v/release/pgiudici13/MicrobitRadiov3?style=for-the-badge&label=Release&color=orange"></a>
     <img src="https://img.shields.io/badge/Hardware-micro:bit-brightgreen?style=for-the-badge&logo=microbit">
     <img src="https://img.shields.io/badge/Linguaggio-TypeScript-blue?style=for-the-badge&logo=typescript">
     <img src="https://img.shields.io/badge/Stato-Stabile-success?style=for-the-badge">
