@@ -140,9 +140,8 @@ Cosa succede quando premi i bottoni fisici sulla scocca del micro:bit.
 Per far funzionare il codice (`ptx.json`) ci appoggiamo a librerie esterne molto comode:
 
 1. `radio`: Che abilita l'antenna principale.
-2. `microphone`: Per catturare il rumore ambientale attraverso i microfoni.
-3. `radio-broadcast`: Per far viaggiare rapidi i messaggi a tutto il gruppo, non solo ad una persona.
-4. `microturtle`: Una libreria speciale che permette di usare lo schermo dei LED come se fosse un piano da disegno per il nostro grafico a barre.
+2. `radio-broadcast`: Per far viaggiare rapidi i messaggi a tutto il gruppo, non solo ad una persona.
+3. `microturtle`: Una libreria speciale che permette di usare lo schermo dei LED come se fosse un piano da disegno per il nostro grafico a barre.
 
 ---
 
