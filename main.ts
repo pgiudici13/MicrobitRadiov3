@@ -1,4 +1,5 @@
 enum RadioMessage {
+    HiUnknown = 26979,
     HiGeget = 2955,
     OnlineSYNC = 7840,
     OnlineSYNCReciving = 27820,
@@ -8,7 +9,7 @@ enum RadioMessage {
     message1 = 49434
 }
 radio.onReceivedMessage(RadioMessage.OnlineSYNC, function () {
-    basic.pause(randint(5, 1000))
+    basic.pause(randint(5, 1700))
     radio.sendMessage(RadioMessage.OnlineSYNCReciving)
 })
 input.onButtonPressed(Button.A, function () {
@@ -24,23 +25,9 @@ input.onButtonPressed(Button.A, function () {
             radio.sendMessage(RadioMessage.HiGagez)
             ok()
         } else {
-            basic.showLeds(`
-                # . # # .
-                # . # . #
-                # . # . #
-                # . # . #
-                # . # # .
-                `)
-            basic.pause(100)
-            basic.showLeds(`
-                # # . . #
-                . # . # .
-                . . # . .
-                . # . # .
-                # . . # #
-                `)
-            basic.pause(2000)
-            basic.clearScreen()
+            radio.sendMessage(RadioMessage.HiUnknown)
+            serial.writeLine("Sono | " + control.deviceName())
+            ok()
         }
     }
 })
@@ -49,6 +36,14 @@ radio.onReceivedMessage(RadioMessage.HiGeget, function () {
     basic.clearScreen()
     music.play(music.stringPlayable("F A C5 A F A C5 - ", 500), music.PlaybackMode.InBackground)
     geget_ID()
+    basic.pause(500)
+    Hi()
+})
+radio.onReceivedMessage(RadioMessage.HiUnknown, function () {
+    status = 3
+    basic.clearScreen()
+    music.play(music.stringPlayable("F A C5 A F A C5 - ", 500), music.PlaybackMode.InBackground)
+    basic.showIcon(IconNames.SmallDiamond)
     basic.pause(500)
     Hi()
 })
@@ -115,9 +110,20 @@ input.onButtonPressed(Button.AB, function () {
         basic.clearScreen()
         basic.pause(200)
         status = 0
-        ok()
-        basic.pause(500)
-        basic.clearScreen()
+        if (online > 0) {
+            ok()
+            basic.pause(500)
+            basic.clearScreen()
+        } else {
+            basic.showLeds(`
+                # . . . #
+                . # . # .
+                . . # . .
+                . # . # .
+                # . . . #
+                `)
+            SYNCDOOK = 1
+        }
     }
 })
 radio.onReceivedString(function (receivedString) {
