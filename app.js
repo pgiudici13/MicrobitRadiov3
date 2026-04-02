@@ -446,6 +446,17 @@ const LANG_COLORS = {
   Makefile:'#427819', Shell:'#89e051'
 };
 
+const updateEl = (id, text) => {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text || '—';
+};
+
+const esc = (s) => {
+  if (!s) return '';
+  const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+  return String(s).replace(/[&<> "']/g, m => map[m]);
+};
+
 async function fetchGithubData() {
   try {
     const [repoRes, commitsRes, langsRes, userReposRes, releaseRes] = await Promise.all([
