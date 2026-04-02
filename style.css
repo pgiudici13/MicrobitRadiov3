@@ -148,7 +148,14 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .nav-logo{display:flex;align-items:center;gap:12px;font-weight:900;font-size:1.05rem;text-decoration:none;color:var(--text);letter-spacing:-0.015em;position:relative;overflow:hidden}
 .nav-logo::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);animation: logoShimmer 4s infinite 2s;transform: skewX(-20deg)}
 @keyframes logoShimmer { 0% { left: -100%; } 25%, 100% { left: 200%; } }
-.nav-logo-icon{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--indigo));display:flex;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(79,142,255,0.3)}
+.nav-logo-icon{width:36px;height:36px;display:flex;align-items:center;justify-content:center;transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);}
+.gemini-logo-nav {
+  filter: drop-shadow(0 0 10px rgba(79,142,255,0.4));
+  animation: geminiStarSpin 12s linear infinite;
+}
+.gemini-logo-nav .g-path { animation: geminiStarPulse 3s ease-in-out infinite alternate; }
+.nav-logo:hover .gemini-logo-nav { transform: scale(1.1); filter: drop-shadow(0 0 15px rgba(79,142,255,0.6)); }
+
 .nav-links{display:flex;gap:4px;list-style:none}
 .nav-links a{color:var(--text2);text-decoration:none;padding:6px 16px;border-radius:12px;font-size:.84rem;font-weight:500;transition:all .3s ease;position:relative}
 .nav-links a:hover,.nav-links a.active{color:var(--accent2);background:rgba(79,142,255,0.08)}
@@ -269,13 +276,21 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 /* ======================== ARCH ======================== */
 .arch{background:var(--surface);backdrop-filter:var(--blur);border:1px solid var(--border);border-radius:var(--r);padding:1.8rem;text-align:center;position:relative;overflow:hidden}
 .arch::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent)}
+.arch-flow{display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap;margin:2rem 0}
+.arch-step{background:var(--surface);backdrop-filter:var(--blur);border:1px solid var(--border);border-radius:var(--rs);padding:1.2rem;text-align:center;flex:1;min-width:200px;max-width:280px;transition:all .35s;position:relative;overflow:hidden}
+.arch-step::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.05),transparent)}
+.arch-step:hover{transform:translateY(-4px);border-color:var(--border2);box-shadow:0 10px 30px rgba(0,0,0,0.2)}
+.arch-step .step-icon{width:42px;height:42px;background:rgba(79,142,255,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto .8rem;color:var(--accent)}
+.arch-step .step-icon svg{width:22px;height:22px}
+.arch-step h4{font-size:.88rem;font-weight:700;margin-bottom:.3rem}.arch-step p{font-size:.74rem;color:var(--text2);line-height:1.5}
 .arch-nodes{display:flex;align-items:center;justify-content:center;gap:.8rem;flex-wrap:wrap}
 .arch-n{padding:.6rem 1rem;border-radius:var(--rs);border:1px solid var(--border);background:var(--surface);font-weight:600;font-size:.76rem;transition:all .35s}
 .arch-n:hover{border-color:rgba(79,142,255,0.15);box-shadow:0 0 16px rgba(79,142,255,0.06)}
 .arch-n.ctr{background:rgba(79,142,255,0.05);border-color:rgba(79,142,255,0.15);padding:.8rem 1.5rem;font-size:.84rem;animation:ctrGlow 3s ease infinite}
 @keyframes ctrGlow{0%,100%{box-shadow:0 0 8px rgba(79,142,255,0.04)}50%{box-shadow:0 0 20px rgba(79,142,255,0.1)}}
-.arch-arr{color:var(--accent);animation:arrPulse 2s infinite}
-@keyframes arrPulse{0%,100%{opacity:.25}50%{opacity:.8}}
+.arch-arr{color:var(--accent);animation:arrPulse 2s infinite;display:flex;align-items:center;justify-content:center}
+@keyframes arrPulse{0%,100%{opacity:.25;transform:scale(0.95)}50%{opacity:.8;transform:scale(1.05)}}
+.arch-arr svg{width:24px;height:24px}
 
 /* ======================== MODULES ======================== */
 .mod{background:var(--surface);backdrop-filter:var(--blur);border:1px solid var(--border);border-radius:var(--r);padding:.9rem;text-align:center;transition:all .3s cubic-bezier(.16,1,.3,1)}

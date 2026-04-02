@@ -1,0 +1,48 @@
+=========================================================
+MicrobitRadioV3 - Sito Ufficiale: Preferenze e Design
+=========================================================
+Data Ultimo Aggiornamento: 02 Aprile 2026
+Autore: pgiudici13
+Sviluppato da: Antigravity AI (Coding Assistant)
+
+---------------------------------------------------------
+1. FILOSOFIA DI DESIGN: "DARK GEMINI"
+---------------------------------------------------------
+- Palette: Sfondo ultra-deep blue (#02040c) per massimizzare il contrasto.
+- Estetica: Liquid Glass 2.0. Il "vetro" deve essere percepito tramite i 1.2px
+  di bordo che si illuminano al passaggio del mouse (Blade of Light).
+- Contenuto: Nessun "bollo" o bagliore interno ai blocchi per mantenere
+  la massima leggibilità e professionalità.
+
+---------------------------------------------------------
+2. ESPERIENZA INTRODUTTIVA
+---------------------------------------------------------
+- Tema: Neutro e cinetico. Stella a 4 punte (Gemini Style) con anelli
+  orbitali trasparenti.
+- Animazione: Esplosione scura con onde d'urto (shockwaves) blu/viola durante
+  la transizione verso la home.
+- Navbar: Scompare durante l'intro per non creare artefatti visivi.
+
+---------------------------------------------------------
+3. NAVIGAZIONE E LAYOUT
+---------------------------------------------------------
+- Centratura: Navbar fissa con left:50% e translateX(-50%).
+- Progress Bar: Inset (calc(100% - 5rem)), visibilità solo durante lo scroll,
+  animata con scaleX per fluidità estrema.
+- Back to Top: Pulsante Glass flottante che appare dopo 600px di scroll.
+- Background: Reticolo interattivo canvas con connessioni "elettriche"
+  che reagiscono alla vicinanza del cursore.
+
+---------------------------------------------------------
+4. ARCHITETTURA DI RETE (Logica Code)
+---------------------------------------------------------
+- Canale Radio: 137 universale.
+- Protocollo: Sincronizzazione ad-hoc (Sync -> Jitter -> Ack).
+- HUD: Rendering 5x5 LED tramite libreria Turtle, segmentato per righe (0-20 utenti).
+
+---------------------------------------------------------
+Punti Chiave Future-Proof:
+- Non aggiungere mai colori arcobaleno (Rainbow) se non esplicitamente richiesto.
+- Mantenere le riflessioni esclusivamente sui bordi delle card.
+- Verificare sempre la centratura della navbar dopo ogni modifica all'animazione slideDown.
+=========================================================

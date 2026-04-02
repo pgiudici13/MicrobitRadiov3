@@ -56,8 +56,18 @@
 <!-- ====== NAVBAR ====== -->
 <nav class="navbar" id="navbar">
   <div class="nav-inner">
-    <a href="#" class="nav-logo" data-page="home">
-      <div class="nav-logo-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49"/></svg></div>
+     <a href="#" class="nav-logo" data-page="home">
+      <div class="nav-logo-icon gemini-logo-nav">
+        <svg viewBox="0 0 100 100">
+          <path class="g-path" d="M50 0 C50 40, 60 50, 100 50 C60 50, 50 60, 50 100 C50 60, 40 50, 0 50 C40 50, 50 40, 50 0 Z" fill="url(#navStarGradient)"/>
+          <defs>
+            <linearGradient id="navStarGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#fff"/>
+              <stop offset="100%" stop-color="var(--accent)"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
       MicrobitRadioV3
     </a>
     <ul class="nav-links" id="navLinks">
@@ -176,25 +186,42 @@
   <section class="section">
     <div class="section-inner">
       <div class="sh sa"><span class="tag">Architettura</span><h2>Come è strutturata la rete</h2></div>
-      <div class="arch sa sc">
-        <div class="arch-nodes">
-          <div class="arch-n"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" style="margin-bottom:2px"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg><br>Mittente</div>
-          <div class="arch-arr"><svg width="28" height="12" viewBox="0 0 32 16" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M0 8h28m-6-6l6 6-6 6"/></svg></div>
-          <div class="arch-n ctr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" style="margin-bottom:2px"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49"/></svg><br>Canale 137</div>
-          <div class="arch-arr"><svg width="28" height="12" viewBox="0 0 32 16" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M0 8h28m-6-6l6 6-6 6"/></svg></div>
-          <div class="arch-n"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" style="margin-bottom:2px"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg><br>Riceventi</div>
+      <div class="arch-flow sa">
+        <div class="arch-step">
+          <div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></div>
+          <h4>Sincronizzazione</h4>
+          <p>Scan <code>OnlineSYNC</code> broadcast su canale 137. Tutti i nodi ricevono il segnale.</p>
         </div>
+        <div class="arch-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
+        <div class="arch-step">
+          <div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+          <h4>Random Jitter</h4>
+          <p>Ogni nodo attende 5-1700ms prima di rispondere per evitare collisioni radio.</p>
+        </div>
+        <div class="arch-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
+        <div class="arch-step">
+          <div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <h4>Ack & HUD</h4>
+          <p>Risposta <code>OnlineSYNCReciving</code>. Il contatore viene mostrato come barre LED.</p>
+        </div>
+      </div>
+      
+      <div class="arch-nodes sa" style="margin-top:2rem">
+        <div class="arch-n"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" style="margin-bottom:2px"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg><br>Mittente</div>
+        <div class="arch-arr"><svg width="28" height="12" viewBox="0 0 32 16" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M0 8h28m-6-6l6 6-6 6"/></svg></div>
+        <div class="arch-n ctr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" style="margin-bottom:2px"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49"/></svg><br>Canale 137</div>
+        <div class="arch-arr"><svg width="28" height="12" viewBox="0 0 32 16" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M0 8h28m-6-6l6 6-6 6"/></svg></div>
+        <div class="arch-n"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" style="margin-bottom:2px"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg><br>Riceventi</div>
       </div>
     </div>
   </section>
   <section class="section">
     <div class="section-inner">
       <div class="sh sa"><span class="tag">Estensioni</span><h2>Moduli utilizzati</h2></div>
-      <div class="grid3" style="grid-template-columns:repeat(4,1fr)">
+      <div class="grid3" style="grid-template-columns:repeat(3,1fr)">
         <div class="mod sa d1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg><h4>radio</h4><p>Comunicazione base</p></div>
         <div class="mod sa d2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--indigo)" stroke-width="1.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg><h4>radio-broadcast</h4><p>Messaggi tipizzati</p></div>
         <div class="mod sa d3"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><h4>microturtle</h4><p>Disegno sulla griglia</p></div>
-        <div class="mod sa d4"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="1.5"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg><h4>microphone</h4><p>Input audio</p></div>
       </div>
     </div>
   </section>
