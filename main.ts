@@ -9,7 +9,7 @@ enum RadioMessage {
 }
 radio.onReceivedMessage(RadioMessage.OnlineSYNC, function () {
     basic.pause(randint(5, 1000))
-    radio.sendMessage(RadioMessage.message1)
+    radio.sendMessage(RadioMessage.OnlineSYNCReciving)
 })
 input.onButtonPressed(Button.A, function () {
     if (status == 0) {
@@ -52,7 +52,7 @@ radio.onReceivedMessage(RadioMessage.HiGeget, function () {
     basic.pause(500)
     Hi()
 })
-function ok () {
+function ok() {
     led.setBrightness(50)
     basic.showLeds(`
         . . . . .
@@ -93,7 +93,7 @@ input.onButtonPressed(Button.AB, function () {
     if (status == 0) {
         status = 1
         online = 0
-        radio.sendMessage(RadioMessage.message1)
+        radio.sendMessage(RadioMessage.OnlineSYNC)
         SYNCDID += 1
         SYNCDOOK = 0
         for (let index = 0; index < 2; index++) {
@@ -214,7 +214,7 @@ input.onGesture(Gesture.ScreenUp, function () {
         if (input.isGesture(Gesture.ScreenUp)) {
             if (input.buttonIsPressed(Button.B)) {
                 basic.showIcon(IconNames.Ghost)
-                radio.sendMessage(RadioMessage.message1)
+                radio.sendMessage(RadioMessage.BLOCK)
                 basic.pause(100)
                 basic.clearScreen()
             }
@@ -234,7 +234,7 @@ radio.onReceivedMessage(RadioMessage.OnlineSYNCReciving, function () {
         online += 1
     }
 })
-function Hi () {
+function Hi() {
     basic.clearScreen()
     led.setBrightness(50)
     basic.showLeds(`
@@ -272,7 +272,7 @@ function Hi () {
     basic.clearScreen()
     status = 0
 }
-function zotap_ID () {
+function zotap_ID() {
     basic.showLeds(`
         # # . . .
         . . . # .
@@ -281,7 +281,7 @@ function zotap_ID () {
         . . # . #
         `)
 }
-function gagez_ID () {
+function gagez_ID() {
     basic.showLeds(`
         # # # . .
         . . . . #
@@ -290,7 +290,7 @@ function gagez_ID () {
         . . # . .
         `)
 }
-function geget_ID () {
+function geget_ID() {
     basic.showLeds(`
         . # . . #
         # . # # .
