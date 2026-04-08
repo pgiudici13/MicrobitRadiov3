@@ -453,7 +453,7 @@ function updateEl(id, text) {
 function esc(s) {
   if (!s) return '';
   const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
-  return String(s).replace(/[&<> "']/g, m => map[m]);
+  return String(s).replace(/[&<>"']/g, m => map[m]);
 }
 
 async function fetchGithubData() {

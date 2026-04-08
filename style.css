@@ -369,7 +369,7 @@ a, button, [onclick], .key, .pchip, .wl { cursor: none !important; }
 .commit{display:flex;align-items:center;gap:8px;padding:.6rem .8rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);transition:all .25s;backdrop-filter:var(--blur)}
 .commit:hover{transform:translateX(2px);border-color:var(--border2)}
 .commit-sha{font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--indigo);background:rgba(99,102,241,0.05);padding:1px 5px;border-radius:4px;white-space:nowrap}
-.commit-msg{flex:1;font-size:.78rem}.commit-date{font-size:.66rem;color:var(--text3);white-space:nowrap}
+.commit-msg{flex:1;font-size:.78rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.commit-date{font-size:.66rem;color:var(--text3);white-space:nowrap}
 
 /* ======================== SIMULATOR ======================== */
 .sim-split{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start}
