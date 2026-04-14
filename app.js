@@ -460,28 +460,56 @@ const fmt = d => new Date(d).toLocaleDateString('it-IT', { day:'2-digit', month:
 
 async function fetchGithubData() {
   try {
-    const [repoRes, commitsRes, langsRes, userReposRes, releaseRes] = await Promise.all([
+    const [repoRes, commitsRes, langsRes, userReposRes, releaseRes, userRes] = await Promise.all([
       fetch(REPO_URL),
       fetch(REPO_URL + '/commits?per_page=10'),
       fetch(REPO_URL + '/languages'),
       fetch(USER_URL + '/repos?sort=updated&per_page=8'),
-      fetch(REPO_URL + '/releases/latest').catch(() => null)
+      fetch(REPO_URL + '/releases/latest').catch(() => null),
+      fetch(USER_URL).catch(() => null)
     ]);
     const repo = repoRes.ok ? await repoRes.json() : null;
     const commits = commitsRes.ok ? await commitsRes.json() : [];
     const langs = langsRes.ok ? await langsRes.json() : {};
     const userRepos = userReposRes.ok ? await userReposRes.json() : [];
     const release = (releaseRes && releaseRes.ok) ? await releaseRes.json() : null;
+    const userProfile = (userRes && userRes.ok) ? await userRes.json() : null;
 
     if (release && release.tag_name) {
       const hv = document.getElementById('hero-version');
       const fv = document.getElementById('footer-version');
       const rt = document.getElementById('gh-release-tag');
       const rd = document.getElementById('gh-release-date');
+      const btn = document.getElementById('gh-release-download');
+      
       if (hv) hv.textContent = release.tag_name;
       if (fv) fv.textContent = release.tag_name;
       if (rt) rt.textContent = release.tag_name;
       if (rd) rd.textContent = release.published_at ? fmt(release.published_at) : '';
+      
+      if (btn) {
+        if (release.assets && release.assets.length > 0) {
+          btn.href = release.assets[0].browser_download_url;
+        } else {
+          btn.href = release.html_url;
+        }
+      }
+    }
+
+    if (userProfile) {
+      updateEl('about-name', userProfile.name || userProfile.login);
+      updateEl('about-login', userProfile.login);
+      updateEl('about-location', userProfile.location || 'Posizione Sconosciuta');
+      
+      animateCounter('about-followers', userProfile.followers || 0);
+      animateCounter('about-following', userProfile.following || 0);
+      animateCounter('about-repos', userProfile.public_repos || 0);
+      
+      const ca = document.getElementById('about-created');
+      if (ca) ca.textContent = userProfile.created_at ? new Date(userProfile.created_at).getFullYear() : '—';
+      
+      const au = document.getElementById('about-url');
+      if (au && userProfile.html_url) au.href = userProfile.html_url;
     }
 
     if (!repo) {
