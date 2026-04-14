@@ -22,7 +22,7 @@
 
   <br>
 
-  <em>Scambio di messaggi, icone personalizzate per utente e un grafico in tempo reale dei dispositivi online.</em>
+  <em>Scambio di messaggi, identificazione utenti e un grafico in tempo reale dei dispositivi online (fino a 20 utenti!).</em>
   
 </div>
 
@@ -32,92 +32,86 @@
 
 ## Come Funziona la Rete
 
-Il sistema funziona in modalità ad-hoc: tutti i micro:bit comunicano direttamente uno con l'altro. Non c'è un server, tutti possono trasmettere e ricevere messaggi direttamente sullo stesso canale radio.
+Il sistema funziona in modalità "ad-hoc": tutti i micro:bit comunicano direttamente uno con l'altro. Non c'è un server o ruter centrale; tutti possono trasmettere e ricevere messaggi direttamente sullo stesso canale radio.
 
 ```mermaid
 graph LR
-    Mittente[Il tuo micro:bit] -->|Invia un Ping| Rete((Canale 137))
+    Mittente[Il tuo micro:bit] -->|Invia Ping| Rete((Canale Pubblico))
     Rete --> Riceventi[Altri micro:bit]
-    Riceventi -->|Rispondono Sono qui!| Mittente
+    Riceventi -->|Risposta Automatica| Mittente
 ```
 
 > [!TIP]
-> **Cosa significa?** Quando "interroghi" la rete, tutti gli altri dispositivi nelle vicinanze ti rispondono in automatico. Così il tuo schermo si aggiorna e ti mostra esattamente quante persone sono collegate!
+> **Cosa significa?** Quando chiedi chi c'è in giro, tutti gli altri dispositivi vicini ti rispondono automaticamente. Così il tuo micro:bit impara esattamente quanti amici sono collegati in quel momento!
 
 ---
 
 ## Gestione dei Messaggi
 
-Quando il micro:bit riceve un segnale, analizza rapidamente di cosa si tratta e decide l'azione più giusta da compiere, come mostrato qui sotto:
+Quando il micro:bit riceve un segnale, analizza rapidamente di cosa si tratta e agisce di conseguenza offrendo un feedback visivo e uditivo:
 
 ```mermaid
 flowchart TD
-    A([Nuovo Messaggio Ricevuto]) --> B{Che cos'è?}
-    B -- Nome Utente --> C[Controllo del Nome]
-    B -- Molto Testo --> D[Mette In Pausa Le Animazioni]
-    B -- Comando Conto Utenti --> E[Aggiunge +1 alle Statistiche]
+    A([Nuovo Messaggio Ricevuto]) --> B{Di che tipo è?}
+    B -- Nome Utente --> C{Lo conosco?}
+    B -- Testo Lungo --> D[Mette In Pausa Le Animazioni]
+    B -- Comando Scan --> E[Rispondo Presente!]
     
-    C --> F{Lo conosco?}
-    F -- Si --> G[Mostro la sua Icona Speciale e Suono]
-    F -- No --> H[Mostro un Diamante e Suono]
+    C -- Si (Utente VIP) --> F[Stemma Esclusivo e Musica VIP]
+    C -- No (Sconosciuto) --> G[Mostro un Diamante e Suono Standard]
     
-    D --> I[Faccio scorrere il testo sullo schermo]
-    E --> J[Attendo altre risposte]
+    D --> H[Mostro Animazione di Arrivo Messaggio]
+    H --> I[Faccio scorrere il testo sullo schermo]
 ```
 
 ---
 
 ## Gli Stati del micro:bit
 
-In ogni momento, la scheda si trova in una modalità specifica per evitare di bloccarsi o mostrare schermate sbagliate sulle luci LED:
+La scheda utilizza un rigoroso sistema di "stati" per capire cosa sta facendo in ogni momento. Questo evita crash o sovrapposizioni visive quando si premono troppi tasti insieme:
 
 ```mermaid
 stateDiagram-v2
     [*] --> InAttesa
-    InAttesa --> InviaMessaggio : Premi A / A+B
-    InviaMessaggio --> InAttesa : Finito
-    InAttesa --> DisegnaGrafico : Premi B
-    DisegnaGrafico --> InAttesa : Finito
-    InAttesa --> RiceveSegnale : Ricezione Radio
-    RiceveSegnale --> AnimazioneSpeciale : Amico Riconosciuto
-    RiceveSegnale --> MostraTesto : Frase Ricevuta
-    AnimazioneSpeciale --> InAttesa : Finito
-    MostraTesto --> InAttesa : Finito
+    InAttesa --> SalutoVIP : Premi A
+    SalutoVIP --> InAttesa : Finito
+    InAttesa --> ScansioneRete : Premi A+B
+    ScansioneRete --> InAttesa : Utenti Trovati
+    InAttesa --> DisegnoGrafico : Premi B
+    DisegnoGrafico --> InAttesa : Finito
+    InAttesa --> RicezioneTesto : Arriva un Messaggio
+    RicezioneTesto --> InAttesa : Finito
 ```
 
 ---
 
 ## Struttura del Progetto (Mappa delle Funzionalità)
 
-Ecco uno schema semplice diviso per categorie che riassume tutto ciò di cui si occupa il codice di RadioV3:
+Ecco uno schema semplice diviso per categorie che riassume tutto ciò di cui si occupa il programma:
 
 ```mermaid
 flowchart LR
-    Root((Progetto Radio)) --> Rete[Rete Radio]
-    Root --> Vista[Disegni a Schermo]
-    Root --> Sec[Sicurezza]
-    Root --> Audio[Audio e Suoni]
+    Root((Radio V3)) --> Rete[Comunicazione]
+    Root --> Schermo[Effetti Visivi]
+    Root --> Suoni[Audio]
     
-    Rete --> R1(Canale Pubblico 137)
-    Rete --> R2(Massima Portata)
+    Rete --> R1(Gestione Interferenze)
+    Rete --> R2(Ricerca Dispositivi)
     
-    Vista --> V1(Barre Grafiche)
-    Vista --> V2(Libreria Turtle)
+    Schermo --> S1(Grafico a Barre Turtle)
+    Schermo --> S2(Transizioni Animazioni)
     
-    Sec --> S1(Nomi Speciali Ammessi)
-    Sec --> S2(Blocco degli Intrusi)
-    
-    Audio --> A1(Allarmi Bleep)
-    Audio --> A2(Canzoncine per Amici)
+    Suoni --> A1(Avvisi di Sistema)
+    Suoni --> A2(Motivi Musicali VIP)
 ```
 
 <details open>
 <summary><b>Dettaglio delle Funzioni Più Belle</b></summary>
 <br>
 
-* **Grafico a Barre**: Accende i LED colonna per colonna per contare fisicamente i ritorni (fino a 20 schede collegate senza sovrapporsi).
-* **Icone Personalizzate**: Se il sistema capisce che si è connesso un identificativo conosciuto, fa partire una sua animazione unica con tanto di colonna sonora in sottofondo.
-* **Priorità al Testo**: Se ricevi un testo lungo, lo scorrimento ha la precedenza assoluta, disattivando qualsiasi altro disegno sulla lavagna LED per non farti perdere il messaggio.
+* **Grafico HUD Potenziato**: Grazie a precisi calcoli matematici, la sezione "Grafico a Barre" accende dinamicamente una barra di luci alla volta. Ora supporta **fino a 20 utenti contemporanei** visualizzati elegantemente sui LED.
+* **Profili Personalizzati (VIP)**: Se la tua scheda ha un nome speciale riconosciuto (come *geget*, *zotap*, o *gagez*), il sistema attiverà una firma visiva e sonora unica quando saluti gli altri!
+* **Ricezione Testo Protetta**: Quando un utente ti invia una lunga frase di testo, il micro:bit fa partire un rapido suono di avviso e una piccola animazione per catturare la tua attenzione prima di far scorrere la scritta.
 
 </details>
 
@@ -125,44 +119,44 @@ flowchart LR
 
 ## Uso dei Pulsanti
 
-Cosa succede quando premi i bottoni fisici sulla scocca del micro:bit.
+Cosa succede quando premi i bottoni fisici sulla scocca del micro:bit. Non ci sono impostazioni complicate: bastano tre azioni.
 
 | Pulsante | Azione | Cosa succede sullo schermo |
 | :---: | :--- | :--- |
-| <kbd>A</kbd> | Invia Saluto | Invia un saluto alla rete. Tutti vedranno un diamante, o un'animazione speciale se sei un profilo VIP. |
-| <kbd>A</kbd> + <kbd>B</kbd> | Conta Utenti | Azzera il display e lancia il controllo radio per vedere chi c'è in giro. |
-| <kbd>B</kbd> | Aggiorna Schermo | Ridisegna il grafico dal vivo in base all'ultimo "Conta Utenti" effettuato. |
+| <kbd>A</kbd> | **Invia Saluto** | Dici "Ciao" alla rete. Trasmetti il tuo ID e fai accendere lo schermo degli altri (o mostri il tuo stemma VIP). |
+| <kbd>A</kbd> + <kbd>B</kbd> | **Scan della Rete** | Avvia un'animazione di radar a tutto schermo. Manda un ping e aspetta le risposte per contare chi c'è online. |
+| <kbd>B</kbd> | **Aggiorna l'HUD** | Disegna in diretta il grafico a barre in base all'ultimo numero di dispositivi trovati (fino a 20). |
 
 ---
 
 ## Librerie Usate
 
-Per far funzionare il codice (`ptx.json`) ci appoggiamo a librerie esterne molto comode:
+Per far funzionare il codice in modo così fluido, ci appoggiamo ad alcuni componenti speciali messi a disposizione da MakeCode:
 
 1. `radio`: Che abilita l'antenna principale.
-2. `radio-broadcast`: Per far viaggiare rapidi i messaggi a tutto il gruppo, non solo ad una persona.
-3. `microturtle`: Una libreria speciale che permette di usare lo schermo dei LED come se fosse un piano da disegno per il nostro grafico a barre.
+2. `radio-broadcast`: Ottima per inviare pacchetti a tutte le schede nelle vicinanze in contemporanea.
+3. `microturtle`: Una libreria speciale che permette di guidare una "penna invisibile" sullo schermo dei LED per disegnare il nostro grafico a barre passo dopo passo.
 
 ---
 
-## Da fare prima di usarlo...
+## Entra nel Club (Profili VIP)
 
 > [!NOTE]
-> **Tutti possono partecipare!** A differenza delle versioni precedenti, ora chiunque può inviare e ricevere messaggi e far parte del conteggio HUD senza configurazioni.
+> **Tutti possono partecipare!** Come sempre, chiunque può programmare la propria scheda e far parte subito della rete e del conteggio. Non servono password.
 
-Tuttavia, se vuoi sbloccare le **funzioni VIP** (un'icona speciale dedicata e una campanella d'avviso personalizzata quando ti connetti), puoi aprire una discussione su GitHub indicando il nome del tuo micro:bit e ti aggiungeremo alla lista ufficiale nel codice!
+Tuttavia, se vuoi sbloccare le **funzioni esclusive** (un'icona "Signature" personalizzata e un jingle d'avviso unico quando ti connetti), puoi farti riconoscere dal codice. Apri una discussione o una Issue su GitHub indicando il nome del tuo micro:bit e ti aggiungeremo alla "Hall of Fame" nel prossimo aggiornamento!
 
 ---
 
-## Link Utili e Accesso Veloce
+## Accesso Veloce
 
-Se vuoi accedere istantaneamente al codice o visualizzare l'interfaccia dedicata: 
+Se vuoi importare il progetto o interagire con il simulatore: 
 
-* [**Sito Web del Progetto**](https://pgiudici13.github.io/MicrobitRadiov3/) - Pagina ufficiale ospitata su GitHub Pages.
-* [**Importa in MakeCode**](https://makecode.microbit.org/#github:pgiudici13/MicrobitRadiov3) - Clicca qui per aprire in automatico la mappa di blocchi logici del programma direttamente sul sito ufficiale di Microsoft MakeCode.
+* [**Sito Web del Progetto**](https://pgiudici13.github.io/MicrobitRadiov3/) - Pagina ufficiale ricca di animazioni ospitata su GitHub.
+* [**Importa in MakeCode**](https://makecode.microbit.org/#github:pgiudici13/MicrobitRadiov3) - Installa in pochi istanti tutto il programma blocchi/TypeScript sul tuo editor di fiducia.
 
 ---
 
 > [!NOTE]
-> Progetto compilato, scritto e pensato interamente da **[pgiudici13](https://github.com/pgiudici13)**. 
-> Sviluppato per fini didattici e per capire come far comunicare piccole schede intelligenti con la minor fatica possibile.
+> Progetto compilato, scritto e pensato da **[pgiudici13](https://github.com/pgiudici13)**. 
+> Creato per unire sviluppo, hardware e puro divertimento!
