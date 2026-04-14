@@ -109,10 +109,10 @@ input.onButtonPressed(Button.AB, function () {
         }
         basic.clearScreen()
         basic.pause(200)
-        status = 0
         if (online > 0) {
             ok()
             basic.pause(500)
+            status = 0
             basic.clearScreen()
         } else {
             basic.showLeds(`
@@ -122,7 +122,10 @@ input.onButtonPressed(Button.AB, function () {
                 . # . # .
                 # . . . #
                 `)
+            basic.pause(500)
+            status = 0
             SYNCDOOK = 1
+            basic.clearScreen()
         }
     }
 })
