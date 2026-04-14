@@ -739,6 +739,21 @@
                 Ultimo push: <span id="gh-pushed">—</span></p>
             </div>
           </div>
+          <div class="repo-card sa" style="margin-top:12px;grid-template-columns:auto 1fr auto;">
+            <div style="display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:12px;background:rgba(52,211,153,0.1)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </div>
+            <div>
+              <h3 style="font-size:.88rem;font-weight:700">Ultima Release</h3>
+              <p style="color:var(--text2);font-size:.78rem">Versione corrente: <span id="gh-release-tag" style="color:var(--green);font-weight:700;font-family:'JetBrains Mono',monospace">...</span>
+                <span id="gh-release-date" style="color:var(--text3);margin-left:6px;font-size:.7rem"></span>
+              </p>
+            </div>
+            <a href="https://github.com/pgiudici13/MicrobitRadiov3/releases/latest" target="_blank" class="btn btn-o" style="font-size:.72rem;padding:6px 12px">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              Scarica
+            </a>
+          </div>
           <div class="sh sa" style="margin-top:2.5rem"><span class="tag">Linguaggi</span>
             <h2>Composizione del codice</h2>
           </div>
@@ -799,7 +814,6 @@
     </div>
   </main>
 
-  <!-- ===================== ABOUT ===================== -->
   <main class="page" id="page-about">
     <div class="page-wrap">
       <section class="section" style="padding-top:100px">
@@ -807,45 +821,94 @@
           <div class="about-hero sa"><img class="about-img" id="aboutAvatar" src="" alt="pgiudici13">
             <div><span class="tag">Autore</span>
               <h2 style="font-size:1.8rem">pgiudici13</h2>
-              <p style="color:var(--text2);margin-top:.2rem;font-size:.9rem">Ideatore e sviluppatore di MicrobitRadioV3.
-              </p>
-              <div style="margin-top:.8rem"><a href="https://github.com/pgiudici13" target="_blank" class="btn btn-p"
-                  style="padding:7px 14px;font-size:.78rem"><svg width="12" height="12" viewBox="0 0 16 16"
-                    fill="currentColor">
-                    <path
-                      d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-                  </svg> Profilo GitHub</a></div>
+              <p style="color:var(--text2);margin-top:.2rem;font-size:.9rem">Studente e sviluppatore appassionato di hardware, software e design. Ideatore di MicrobitRadioV3 e altri progetti open-source.</p>
+              <p style="color:var(--text3);margin-top:.4rem;font-size:.78rem">Il progetto nasce dalla voglia di esplorare la comunicazione radio tra dispositivi embedded, unendo programmazione e creatività visiva.</p>
+              <div style="display:flex;gap:8px;margin-top:.8rem;flex-wrap:wrap">
+                <a href="https://github.com/pgiudici13" target="_blank" class="btn btn-p" style="padding:7px 14px;font-size:.78rem">
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                  Profilo GitHub
+                </a>
+                <a href="https://pgiudici13.github.io/MicrobitRadiov3/" class="btn btn-s" style="padding:7px 14px;font-size:.78rem">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  Sito Web
+                </a>
+              </div>
             </div>
           </div>
-          <div class="sh sa" style="margin-top:2rem"><span class="tag">Specifiche</span>
-            <h2>Dettagli tecnici</h2>
+
+          <div class="sh sa" style="margin-top:2.5rem"><span class="tag">Competenze</span>
+            <h2>Stack Tecnologico</h2>
+            <p>Linguaggi, strumenti e piattaforme che uso nei miei progetti</p>
           </div>
           <div class="grid3">
             <div class="card sa d1">
-              <div class="icon b"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  stroke-width="2">
-                  <path
-                    d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-                </svg></div>
+              <div class="icon c"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 18l6-6-6-6"/><path d="M8 6l-6 6 6 6"/></svg></div>
+              <h3>Linguaggi</h3>
+              <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:.5rem">
+                <span class="repo-tag">TypeScript</span>
+                <span class="repo-tag">Python</span>
+                <span class="repo-tag">HTML</span>
+                <span class="repo-tag">CSS</span>
+                <span class="repo-tag">JavaScript</span>
+              </div>
+            </div>
+            <div class="card sa d2">
+              <div class="icon p"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg></div>
+              <h3>Piattaforme</h3>
+              <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:.5rem">
+                <span class="repo-tag">MakeCode</span>
+                <span class="repo-tag">GitHub Pages</span>
+                <span class="repo-tag">VS Code</span>
+              </div>
+            </div>
+            <div class="card sa d3">
+              <div class="icon g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+              <h3>Hardware</h3>
+              <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:.5rem">
+                <span class="repo-tag">BBC micro:bit</span>
+                <span class="repo-tag">Radio 2.4GHz</span>
+                <span class="repo-tag">ARM Cortex</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="sh sa" style="margin-top:2.5rem"><span class="tag">Interessi</span>
+            <h2>Cosa mi appassiona</h2>
+          </div>
+          <div class="grid3">
+            <div class="mini sa d1">
+              <div class="mi"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg></div>
+              <h4>Elettronica & IoT</h4>
+              <p>Far comunicare piccoli dispositivi tra loro è il mio hobby preferito. Sensori, radio e LED.</p>
+            </div>
+            <div class="mini sa d2">
+              <div class="mi"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+              <h4>Web Design</h4>
+              <p>Creare interfacce belle, animate e responsive è un'altra grande passione.</p>
+            </div>
+            <div class="mini sa d3">
+              <div class="mi"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+              <h4>Open Source</h4>
+              <p>Condividere codice e collaborare con altri sviluppatori. Tutto il mio lavoro è pubblico.</p>
+            </div>
+          </div>
+
+          <div class="sh sa" style="margin-top:2rem"><span class="tag">Specifiche</span>
+            <h2>Dettagli tecnici del progetto</h2>
+          </div>
+          <div class="grid3">
+            <div class="card sa d1">
+              <div class="icon b"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
               <h3>Hardware</h3>
               <p class="desc">BBC micro:bit v2 — ARM Cortex-M4, 512KB Flash, radio 2.4GHz, matrice LED 5x5.</p>
             </div>
             <div class="card sa d2">
-              <div class="icon c"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  stroke-width="2">
-                  <rect x="2" y="3" width="20" height="14" rx="2" />
-                  <path d="M8 21h8m-4-4v4" />
-                </svg></div>
+              <div class="icon c"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg></div>
               <h3>Ambiente</h3>
               <p class="desc">Microsoft MakeCode con TypeScript. Deploy via USB o Bluetooth.</p>
             </div>
             <div class="card sa d3">
-              <div class="icon g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  stroke-width="2">
-                  <circle cx="12" cy="12" r="2" />
-                  <path
-                    d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14" />
-                </svg></div>
+              <div class="icon g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg></div>
               <h3>Rete radio</h3>
               <p class="desc">Canale 137, potenza 7, messaggi codificati tramite enum.</p>
             </div>

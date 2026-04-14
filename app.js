@@ -456,6 +456,8 @@ function esc(s) {
   return String(s).replace(/[&<>"']/g, m => map[m]);
 }
 
+const fmt = d => new Date(d).toLocaleDateString('it-IT', { day:'2-digit', month:'short', year:'numeric' });
+
 async function fetchGithubData() {
   try {
     const [repoRes, commitsRes, langsRes, userReposRes, releaseRes] = await Promise.all([
@@ -474,8 +476,12 @@ async function fetchGithubData() {
     if (release && release.tag_name) {
       const hv = document.getElementById('hero-version');
       const fv = document.getElementById('footer-version');
+      const rt = document.getElementById('gh-release-tag');
+      const rd = document.getElementById('gh-release-date');
       if (hv) hv.textContent = release.tag_name;
       if (fv) fv.textContent = release.tag_name;
+      if (rt) rt.textContent = release.tag_name;
+      if (rd) rd.textContent = release.published_at ? fmt(release.published_at) : '';
     }
 
     if (!repo) {
@@ -484,22 +490,6 @@ async function fetchGithubData() {
     }
 
     // Repository Details
-    updateEl('gh-fullname', repo.full_name);
-    updateEl('gh-desc', repo.description);
-    updateEl('gh-license', repo.license ? repo.license.spdx_id : 'No License');
-    updateEl('gh-branch', repo.default_branch);
-    updateEl('gh-visibility', repo.visibility ? repo.visibility.toUpperCase() : 'PUBLIC');
-    const avatar = document.getElementById('gh-avatar');
-    if (avatar && repo.owner) avatar.src = repo.owner.avatar_url;
-
-    // Stat counters
-    animateCounter('gh-stars', repo.stargazers_count ?? 0);
-    animateCounter('gh-forks', repo.forks_count ?? 0);
-    animateCounter('gh-watchers', repo.watchers_count ?? 0);
-    animateCounter('gh-issues', repo.open_issues_count ?? 0);
-    animateCounter('gh-size', repo.size ?? 0);
-
-    // Repo card
     const av = repo.owner?.avatar_url || '';
     const ghAvatar = document.getElementById('gh-avatar');
     const aboutAvatar = document.getElementById('aboutAvatar');
@@ -511,6 +501,17 @@ async function fetchGithubData() {
     if (fn) fn.textContent = repo.full_name || '';
     if (desc) desc.textContent = repo.description || 'Nessuna descrizione.';
 
+    updateEl('gh-license', repo.license ? repo.license.spdx_id : 'No License');
+    updateEl('gh-branch', repo.default_branch);
+    updateEl('gh-visibility', repo.visibility ? repo.visibility.toUpperCase() : 'PUBLIC');
+
+    // Stat counters
+    animateCounter('gh-stars', repo.stargazers_count ?? 0);
+    animateCounter('gh-forks', repo.forks_count ?? 0);
+    animateCounter('gh-watchers', repo.watchers_count ?? 0);
+    animateCounter('gh-issues', repo.open_issues_count ?? 0);
+    animateCounter('gh-size', repo.size ?? 0);
+
     const tags = document.getElementById('gh-tags');
     if (tags) {
       tags.innerHTML = '';
@@ -520,7 +521,6 @@ async function fetchGithubData() {
         });
     }
 
-    const fmt = d => new Date(d).toLocaleDateString('it-IT', { day:'2-digit', month:'short', year:'numeric' });
     const cr = document.getElementById('gh-created');
     const pu = document.getElementById('gh-pushed');
     if (cr) cr.textContent = repo.created_at ? fmt(repo.created_at) : '—';
