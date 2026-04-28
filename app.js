@@ -4,6 +4,11 @@
 let mouse = { x: 0, y: 0, lastX: 0, lastY: 0 };
 let cursor = { x: 0, y: 0 };
 const LERP = 0.36; // Snappier response
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let pageIsVisible = document.visibilityState !== 'hidden';
+document.addEventListener('visibilitychange', () => {
+  pageIsVisible = document.visibilityState !== 'hidden';
+});
 
 window.addEventListener('DOMContentLoaded', () => {
   const intro = document.getElementById('introOverlay');
@@ -12,6 +17,7 @@ window.addEventListener('DOMContentLoaded', () => {
   // Ensure we start at the top
   window.scrollTo(0, 0);
   document.body.style.overflow = 'hidden';
+  if (prefersReducedMotion && cursorEl) cursorEl.style.display = 'none';
 
   // --- CUSTOM CURSOR ---
   window.addEventListener('mousemove', e => {
@@ -20,6 +26,10 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   function updateCursor() {
+    if (prefersReducedMotion || !pageIsVisible) {
+      requestAnimationFrame(updateCursor);
+      return;
+    }
     cursor.x += (mouse.x - cursor.x) * LERP;
     cursor.y += (mouse.y - cursor.y) * LERP;
     if (cursorEl) {
@@ -106,7 +116,7 @@ window.addEventListener('DOMContentLoaded', () => {
         window.scrollTo(0, 0); // Force top on removal
         observeAnimations();
       }, 1800);
-    }, 3000);
+    }, prefersReducedMotion ? 300 : 3000);
   }
 
   // Trigger Live Data
@@ -184,8 +194,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
   for (let i = 0; i < 70; i++) pts.push(new P());
   (function loop() {
+    if (!pageIsVisible) {
+      requestAnimationFrame(loop);
+      return;
+    }
     ctx.clearRect(0, 0, c.width, c.height);
-    drawGrid();
+    if (!prefersReducedMotion) drawGrid();
     pts.forEach(p => { p.update(); p.draw(); });
     requestAnimationFrame(loop);
   })();
@@ -242,7 +256,8 @@ function navigateTo(page) {
   document.querySelectorAll('.nav-links a').forEach(a => {
     a.classList.toggle('active', a.dataset.page === page);
   });
-  document.getElementById('navLinks').classList.remove('open');
+  const navLinks = document.getElementById('navLinks');
+  if (navLinks) navLinks.classList.remove('open');
 }
 
 document.querySelectorAll('[data-page]').forEach(el => {
@@ -301,6 +316,7 @@ function observeAnimations() {
   ];
   let idx = 0;
   setInterval(() => {
+    if (!pageIsVisible || prefersReducedMotion) return;
     const dots = m.querySelectorAll('.led');
     const p = patterns[idx % patterns.length];
     dots.forEach((d, i) => d.classList.toggle('on', p[i] === 1));
@@ -456,6 +472,17 @@ function esc(s) {
   return String(s).replace(/[&<>"']/g, m => map[m]);
 }
 
+function safeExternalUrl(url, fallback = '#') {
+  if (!url) return fallback;
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') return parsed.href;
+  } catch (err) {
+    return fallback;
+  }
+  return fallback;
+}
+
 const fmt = d => new Date(d).toLocaleDateString('it-IT', { day:'2-digit', month:'short', year:'numeric' });
 
 async function fetchGithubData() {
@@ -489,9 +516,9 @@ async function fetchGithubData() {
       
       if (btn) {
         if (release.assets && release.assets.length > 0) {
-          btn.href = release.assets[0].browser_download_url;
+          btn.href = safeExternalUrl(release.assets[0].browser_download_url, 'https://github.com/pgiudici13/MicrobitRadiov3/releases/latest');
         } else {
-          btn.href = release.html_url;
+          btn.href = safeExternalUrl(release.html_url, 'https://github.com/pgiudici13/MicrobitRadiov3/releases/latest');
         }
       }
     }
@@ -509,11 +536,15 @@ async function fetchGithubData() {
       if (ca) ca.textContent = userProfile.created_at ? new Date(userProfile.created_at).getFullYear() : '—';
       
       const au = document.getElementById('about-url');
-      if (au && userProfile.html_url) au.href = userProfile.html_url;
+      if (au && userProfile.html_url) au.href = safeExternalUrl(userProfile.html_url, 'https://github.com/pgiudici13');
     }
 
     if (!repo) {
       console.warn('GitHub API: Repository not found or Rate Limited.');
+      updateEl('gh-fullname', 'Dati GitHub non disponibili');
+      updateEl('gh-desc', 'API non raggiungibile o limite richieste superato.');
+      const cl = document.getElementById('commitsList');
+      if (cl) cl.innerHTML = '<div class="commit"><span class="commit-sha">—</span><span class="commit-msg">Riprova tra poco.</span></div>';
       return;
     }
 
@@ -582,7 +613,7 @@ async function fetchGithubData() {
       const ur = document.getElementById('userRepos');
       if (ur && filtered.length) {
         ur.innerHTML = filtered.map(r =>
-          `<a href="${r.html_url}" target="_blank" class="card sa" style="text-decoration:none;color:inherit">
+          `<a href="${esc(safeExternalUrl(r.html_url, 'https://github.com/pgiudici13'))}" target="_blank" rel="noopener noreferrer" class="card sa" style="text-decoration:none;color:inherit">
             <div class="icon b"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
             <h3>${esc(r.name)}</h3>
             <p class="desc">${esc(r.description || 'Nessuna descrizione')}</p>
@@ -592,7 +623,11 @@ async function fetchGithubData() {
         observeAnimations();
       }
     }
-  } catch (err) { console.warn('GitHub API:', err); }
+  } catch (err) {
+    console.warn('GitHub API:', err);
+    updateEl('gh-fullname', 'Errore caricamento dati');
+    updateEl('gh-desc', 'Controlla la connessione e riprova.');
+  }
 }
 
 function animateCounter(id, target) {

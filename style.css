@@ -28,8 +28,11 @@
 @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased; overflow-x:hidden}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden; cursor: none;}
-a, button, [onclick], .key, .pchip, .wl { cursor: none !important; }
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden; cursor: auto;}
+@media (pointer: fine) and (hover: hover) {
+  body { cursor: none; }
+  a, button, [onclick], .key, .pchip, .wl { cursor: none !important; }
+}
 
 /* ======================== CUSTOM CURSOR ======================== */
 .cursor {
@@ -42,6 +45,18 @@ a, button, [onclick], .key, .pchip, .wl { cursor: none !important; }
 .cursor.hover { width: 26px; height: 26px; background: rgba(79,142,255,0.1); border-color: var(--accent); transform: translate(-50%, -50%) scale(1.08); }
 .cursor.active { transform: translate(-50%, -50%) scale(0.9); }
 @media (max-width: 768px) { .cursor { display: none; } body { cursor: auto; } a, button { cursor: pointer !important; } }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .cursor { display: none !important; }
+  body { cursor: auto !important; }
+  a, button, [onclick], .key, .pchip, .wl { cursor: pointer !important; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 
 /* ======================== INTRO ======================== */
 .intro-overlay {
